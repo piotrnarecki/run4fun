@@ -9,6 +9,11 @@ import 'package:geolocator/geolocator.dart';
 
 import 'dart:async';
 
+
+// W TEJ KLASIE BEDZIE TRENING
+
+
+
 class TrainingRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -92,10 +97,6 @@ class HomeState extends State<Home> {
     distanceFilter: 0,
     timeInterval: 0,
   );
-
-
-
-
 
   getLocations() {
     if (trackLocation) {
@@ -182,7 +183,17 @@ class HomeState extends State<Home> {
     });
   }
 
-  endTraining(context) {}
+  endTraining(context) {
+
+
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => (AfterTraining())),
+    );
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,10 +201,10 @@ class HomeState extends State<Home> {
       appBar: AppBar(
         //title: Text('I am here'),
         actions: <Widget>[
-          FlatButton(
-            child: Text("Get Location"),
-            onPressed: getLocations,
-          )
+//          FlatButton(
+//            child: Text("Get Location"),
+//            onPressed: getLocations,
+//          )
         ],
       ),
       body: Center(
@@ -226,10 +237,7 @@ class HomeState extends State<Home> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => (AfterTraining())),
-                );
+                endTraining(context);
               },
               child: Text(
                 "end training",

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'settings_route.dart';
 import 'training_route.dart';
 
+
+
 void main() {
   runApp(MaterialApp(
     title: 'Navigation Basics',
@@ -10,6 +12,7 @@ void main() {
     home: MainRoute(),
   ));
 }
+// W TEJ KLASIE BEDZIE WYSWIETLANY GLOWNY EKRAN
 
 class MainRoute extends StatelessWidget {
   @override
