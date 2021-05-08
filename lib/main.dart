@@ -12,7 +12,7 @@ void main() {
     home: MainRoute(),
   ));
 }
-// W TEJ KLASIE BEDZIE WYSWIETLANY GLOWNY EKRAN
+// W TEJ KLASIE BEDZIE WYSWIETLANY GLOWNY EKRAN Ekran
 
 class MainRoute extends StatelessWidget {
   @override
