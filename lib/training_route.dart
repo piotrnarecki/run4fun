@@ -87,6 +87,16 @@ class HomeState extends State<Home> {
     getLocations();
   }
 
+  var locationOptions = LocationOptions(
+    accuracy: LocationAccuracy.bestForNavigation,
+    distanceFilter: 0,
+    timeInterval: 0,
+  );
+
+
+
+
+
   getLocations() {
     if (trackLocation) {
       setState(() => trackLocation = false);
