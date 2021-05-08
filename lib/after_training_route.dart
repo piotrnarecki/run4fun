@@ -8,7 +8,7 @@ import 'training_route.dart';
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
 
-// TUTAJ DANE PRZESYLANE DO BAZY DANYCH 
+// TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
   @override
