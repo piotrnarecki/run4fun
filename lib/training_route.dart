@@ -9,9 +9,12 @@ import 'package:geolocator/geolocator.dart';
 
 import 'dart:async';
 
-
 // W TEJ KLASIE BEDZIE TRENING
 
+
+
+// jak trening sie zakonczy to przekaze dane z treningu do jakieś globalnej tablicy a i z
+// niej w AFTER_TRAINING_ROUTE będzie przesyłane do bazy danych
 
 
 class TrainingRoute extends StatelessWidget {
@@ -176,6 +179,8 @@ class HomeState extends State<Home> {
     return distance;
   }
 
+
+
   clearDistance() {
     setState(() {
       distance = 0;
@@ -187,12 +192,14 @@ class HomeState extends State<Home> {
 
 
 
+// tutaj dodaj do bazy
+
+
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => (AfterTraining())),
     );
-
-
   }
 
   @override

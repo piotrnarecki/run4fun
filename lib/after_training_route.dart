@@ -7,10 +7,16 @@ import 'training_route.dart';
 
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
-
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
+  void sendTrainingToDatabase() {
+
+    // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
+
+    // tutaj ma wysyłać trening do bazy danych trening
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,20 +24,27 @@ class AfterTraining extends StatelessWidget {
         title: 'Location Example',
         theme: ThemeData.dark(),
         home: Scaffold(
-          appBar: AppBar(
-            title: Text('After training route'),
-          ),
-          body: Center(
-            child: ElevatedButton(
-              child: Text('Main route'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => (MainRoute())),
-                );
-              },
+            appBar: AppBar(
+              title: Text('After training route'),
             ),
-          ),
-        ));
+            body: Center(
+              child: Column(children: [
+                ElevatedButton(
+                  child: Text('Main route'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => (MainRoute())),
+                    );
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('Send training to database'),
+                  onPressed: () {
+                    sendTrainingToDatabase();
+                  },
+                ),
+              ]),
+            )));
   }
 }

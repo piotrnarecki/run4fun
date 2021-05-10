@@ -16,6 +16,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'widgets.dart';
 import 'authentication.dart';
 
+
+
+
+
+
+// ta klasa zawiera to co było w przykładzie ale docelowo ma mieć pola tekstowe i opcję logowania lub stworzenia nowego konta
+
+
+// narazie nie zmieniłem interfejsu i całość wygląda jak to z przykładu
+
+
+// baza danych jest podpięta pod ten projekt
+
+
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -26,12 +40,8 @@ void main() {
 }
 
 class LoginRoute extends StatelessWidget {
-
-
-
   @override
   Widget build(BuildContext context) {
-
 
 
     // moze zadziala
@@ -40,9 +50,6 @@ class LoginRoute extends StatelessWidget {
       builder: (context, _) => LoginRoute(),
     );
     //
-
-
-
 
     return MaterialApp(
       title: 'Trening',
