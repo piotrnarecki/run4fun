@@ -1,39 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'package:run4fun/login_route.dart';
 import 'settings_route.dart';
 import 'training_route.dart';
-import 'login_route.dart';
+//import 'login_route.dart';
 
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
+//import 'package:google_fonts/google_fonts.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:provider/provider.dart';
+//import 'dart:async';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'widgets.dart';
-import 'authentication.dart';
+//import 'widgets.dart';
+//import 'authentication.dart';
 
 void main() {
-
-
 
   // tutaj metoda sprawdzająca czy użytkownik jest zalogowany
 
   // metoda wyswietlanjaca imię i statystki użytkownika
 
-
-
-  runApp(MaterialApp(
-    title: 'Navigation Basics',
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData.dark(),
-    home: MainRoute(),
-  ));
+  runApp(
+      /**
+      MaterialApp(
+          title: 'Navigation Basics',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(),
+          home: MainRoute(),
+      ),*/
+      ChangeNotifierProvider(
+          create: (context) => ApplicationState(),
+        child: MaterialApp(
+          title: 'Navigation Basics',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light(),
+          home: MainRoute(),
+        )
+      ),
+  );
 }
+
+
 // W TEJ KLASIE BEDZIE WYSWIETLANY GLOWNY EKRAN Ekran
 
 class MainRoute extends StatelessWidget {
