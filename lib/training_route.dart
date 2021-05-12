@@ -244,11 +244,11 @@ class HomeState extends State<Home> {
   }
 
   endTraining(context) {
-    locatron.stopLocationStream();
+    //locatron.stopLocationStream();
 
     _stopTimer();
 
-    saveTraining();
+    //saveTraining();
 
     Navigator.push(
       context,
