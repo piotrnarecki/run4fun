@@ -176,6 +176,7 @@ class _EmailFormState extends State<EmailForm> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
+                    style: TextStyle(color: Colors.black54),
                     controller: _controller,
                     decoration: const InputDecoration(
                       hintText: 'Podaj swój adres email',

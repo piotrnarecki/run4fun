@@ -246,7 +246,7 @@ class HomeState extends State<Home> {
   endTraining(context) {
     //locatron.stopLocationStream();
 
-    _stopTimer();
+    //_stopTimer();
 
     //saveTraining();
 
