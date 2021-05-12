@@ -9,7 +9,7 @@ class Header extends StatelessWidget {
     padding: const EdgeInsets.all(8.0),
     child: Text(
       heading,
-      style: TextStyle(fontSize: 24),
+      style: TextStyle(fontSize: 24,color: Colors.black54),
     ),
   );
 }
@@ -22,7 +22,7 @@ class Paragraph extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     child: Text(
       content,
-      style: TextStyle(fontSize: 18),
+      style: TextStyle(fontSize: 18,color: Colors.black54),
     ),
   );
 }
@@ -41,7 +41,7 @@ class IconAndDetail extends StatelessWidget {
         SizedBox(width: 8),
         Text(
           detail,
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 18,color: Colors.black54),
         )
       ],
     ),

@@ -19,6 +19,7 @@ class LoginRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Trening',
       theme: ThemeData(
         buttonTheme: Theme.of(context).buttonTheme.copyWith(
@@ -48,6 +49,7 @@ class HomePage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
+
           Image.asset('assets/running-facts-crazy.png'),
           SizedBox(height: 8),
           IconAndDetail(Icons.calendar_today, formattedDate),
