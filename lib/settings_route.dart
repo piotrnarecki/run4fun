@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'login_route.dart';
 import 'main.dart';
 
 import 'settings_route.dart';
@@ -18,7 +18,7 @@ class SettingsRoute extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Location Example',
-        theme: ThemeData.dark(),
+        theme: ThemeData.light(),
         home: Scaffold(
           appBar: AppBar(
             title: Text('Settings Route'),
@@ -29,7 +29,7 @@ class SettingsRoute extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => (MainRoute())),
+                  MaterialPageRoute(builder: (context) => (LoginRoute())),
                 );
               },
             ),

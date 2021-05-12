@@ -5,6 +5,8 @@ import 'main.dart';
 import 'settings_route.dart';
 import 'training_route.dart';
 
+import 'login_route.dart';
+
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
@@ -34,7 +36,7 @@ class AfterTraining extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => (MainRoute())),
+                      MaterialPageRoute(builder: (context) => (LoginRoute())),
                     );
                   },
                 ),
