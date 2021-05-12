@@ -5,11 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:run4fun/main.dart';
 
 import 'widgets.dart';
 import 'authentication.dart';
 
 import 'package:intl/intl.dart';
+
+import 'training_route.dart';
+import 'settings_route.dart';
 
 class LoginRoute extends StatelessWidget {
   @override
@@ -67,21 +71,26 @@ class HomePage extends StatelessWidget {
             endIndent: 8,
             color: Colors.grey,
           ),
+          /**
           Header("Przykładowy trening"),
           Paragraph(
             'Zwykłe bieganie + sprint',
           ),
+              */
           Consumer<ApplicationState>(
               builder: (context, appState, _) => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (appState.loginState == ApplicationLoginState.loggedIn) ...[
+                   /**
                     Header('Wiadomość'),
                     GuestBook(
                       addMessage: (String message) =>
                           appState.addMessageToGuestBook(message),
                       messages: appState.guestBookMessages,
                     ),
+                       */
+                    Training(),
                   ]
                 ],
               )
@@ -102,6 +111,7 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loginState = ApplicationLoginState.loggedIn;
+
         _guestBookSubscription = FirebaseFirestore.instance
             .collection('guestbook')
             .orderBy('timestamp', descending: true)
@@ -118,6 +128,7 @@ class ApplicationState extends ChangeNotifier {
           });
           notifyListeners();
         });
+
       } else {
         _loginState = ApplicationLoginState.loggedOut;
         _guestBookMessages = [];
@@ -283,5 +294,50 @@ class _GuestBookState extends State<GuestBook> {
         // to here.
       ],
     );
+  }
+}
+
+class Training extends StatefulWidget {
+  @override
+  _TrainingState createState() => _TrainingState();
+}
+
+class _TrainingState extends State<Training>{
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+            children: [
+              StyledButton(
+                child: Row(
+                    children:[
+                      Icon(Icons.send),
+                      SizedBox(width:4),
+                      Text('Trening'),
+                    ],
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => (TrainingRoute())),
+                  );
+                },
+              ),
+              StyledButton(
+                child: Row(
+                  children:[
+                    Icon(Icons.send),
+                    SizedBox(width:4),
+                    Text('Ustawienia'),
+                  ],
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => (SettingsRoute())),
+                  );
+                },
+              ),
+            ],
+          );
   }
 }

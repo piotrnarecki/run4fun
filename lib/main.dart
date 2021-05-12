@@ -17,7 +17,7 @@ void main() {
           title: 'Navigation Basics',
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light(),
-          home: MainRoute(),
+          home: LoginRoute(),
         )
       ),
   );
@@ -46,7 +46,7 @@ class MainRoute extends StatelessWidget {
                 },
               ),
               ElevatedButton(
-                child: Text('Login'), // ten przycisk nie działa !!!
+                child: Text('Login'), // ten przycisk nie działa !!! JUŻ DZIAŁA !!!
                 onPressed: () {
                   Navigator.push(
                     context,
