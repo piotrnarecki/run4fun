@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:run4fun/locatron.dart';
 
-import 'settings_route.dart';
-import 'training_route.dart';
-import 'main.dart';
 import 'after_training_route.dart';
 
 import 'package:geolocator/geolocator.dart';
 
 import 'dart:async';
 
+import 'globalVariables.dart' as globals;
+
 // W TEJ KLASIE BEDZIE TRENING
-
-
 
 // jak trening sie zakonczy to przekaze dane z treningu do jakieś globalnej tablicy a i z
 // niej w AFTER_TRAINING_ROUTE będzie przesyłane do bazy danych
-
 
 class TrainingRoute extends StatelessWidget {
   @override
@@ -35,6 +32,16 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  // Locatron
+
+  var locatron = Locatron();
+
+  // global variables
+
+  var myCounter = 0;
+
+  //
+
   var isPressed;
 
   var buttonText;
@@ -55,6 +62,8 @@ class HomeState extends State<Home> {
   var speed;
   var heading;
 
+  var time;
+
   var listOfLocations = [];
   var listSize = 0;
 
@@ -66,10 +75,56 @@ class HomeState extends State<Home> {
   late StreamSubscription<Position> streamSubscription;
   bool trackLocation = false;
 
+///// start of timer
+
+  int _timer = 0;
+
+  static const oneSec = const Duration(seconds: 1);
+
+  //new Timer.periodic(oneSec, (Timer t) => print('hi!'));
+
+  late Timer myTimer;
+
+  void _startTimer() {
+    myTimer = new Timer.periodic(oneSec, (timer) {
+      _timer = _timer + 1;
+      globals.counter = globals.counter + 2;
+
+      longitude = locatron.longitude;
+
+      setState(() {
+        //_timer = globals.currentLongitude;
+
+//        latitude = globals.currentLatitude;
+//
+//        longitude = longitude;
+
+        myCounter = globals.counter;
+      });
+    });
+  }
+
+  void _stopTimer() {
+    if (myTimer.isActive) {
+      myTimer.cancel();
+      locatron.stopLocationStream();
+    }
+    setState(() {});
+  }
+
+  void _resetTimer() {
+    _stopTimer();
+    setState(() {
+      _timer = 0;
+    });
+  }
+
+////////////end of timer
+
   @override
   initState() {
     super.initState();
-    checkGps();
+    //checkGps();
 
     trackLocation = false;
     positions = null;
@@ -146,7 +201,8 @@ class HomeState extends State<Home> {
         });
       });
 
-      streamSubscription.onDone(() => setState(() {
+      streamSubscription.onDone(() =>
+          setState(() {
             trackLocation = false;
           }));
     }
@@ -179,8 +235,6 @@ class HomeState extends State<Home> {
     return distance;
   }
 
-
-
   clearDistance() {
     setState(() {
       distance = 0;
@@ -188,19 +242,33 @@ class HomeState extends State<Home> {
     });
   }
 
+  //// TUTAJ METODY DO PRZYCISKOW
+
+  startTraining() {
+    locatron.startLocationStream();
+    _startTimer();
+  }
+
+  pauseTraining() {
+    _stopTimer();
+  }
+
   endTraining(context) {
+    //locatron.stopLocationStream();
 
+    //_stopTimer();
 
-
-// tutaj dodaj do bazy
-
-
+    //saveTraining();
 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => (AfterTraining())),
     );
   }
+
+  saveTraining() {}
+
+  //// TUTAJ INTERFACE
 
   @override
   Widget build(BuildContext context) {
@@ -216,10 +284,10 @@ class HomeState extends State<Home> {
       ),
       body: Center(
           child: Container(
-        child: ListView(
-          children: [
+            child: ListView(
+              children: [
             Text(
-              "${latitude} , ${longitude}",
+            "${latitude} , ${longitude}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -234,26 +302,52 @@ class HomeState extends State<Home> {
               "$speed m/s",
               style: TextStyle(fontSize: 30, color: colorOfSpeed),
             ),
+            Text(
+              "$_timer s",
+              style: TextStyle(fontSize: 30),
+            ),
+            Text(
+              "counter: ${globals.counter} ",
+              style: TextStyle(fontSize: 30),
+            ),
             TextButton(
-              onPressed: buttonOnPressed,
+              onPressed: _startTimer,
               onLongPress: clearDistance,
               child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 30, color: colorOfButton),
+                "start timer",
+                style: TextStyle(fontSize: 30),
               ),
             ),
             TextButton(
-              onPressed: () {
-                endTraining(context);
-              },
+              onPressed: _stopTimer,
+              onLongPress: _resetTimer,
               child: Text(
-                "end training",
-                style: TextStyle(fontSize: 30, color: Colors.white),
+                "stop timer",
+                style: TextStyle(fontSize: 30),
               ),
             ),
-          ],
-        ),
-      )),
+              TextButton(
+                onPressed: buttonOnPressed, // buttonPressed
+                onLongPress: clearDistance,
+                child: Text(
+                  buttonText,
+                  style: TextStyle(fontSize: 30, color: colorOfButton),
+                ),
+              ),
+
+
+              TextButton(
+                onPressed: () {
+                  endTraining(context);
+                },
+                child: Text(
+                  "end training",
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
+              ),
+              ],
+            ),
+          )),
     );
   }
 }

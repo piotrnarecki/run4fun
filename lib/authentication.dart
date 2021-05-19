@@ -26,21 +26,21 @@ class Authentication extends StatelessWidget {
   final String? email;
   final void Function() startLoginFlow;
   final void Function(
-    String email,
-    void Function(Exception e) error,
-  ) verifyEmail;
+      String email,
+      void Function(Exception e) error,
+      ) verifyEmail;
   final void Function(
-    String email,
-    String password,
-    void Function(Exception e) error,
-  ) signInWithEmailAndPassword;
+      String email,
+      String password,
+      void Function(Exception e) error,
+      ) signInWithEmailAndPassword;
   final void Function() cancelRegistration;
   final void Function(
-    String email,
-    String displayName,
-    String password,
-    void Function(Exception e) error,
-  ) registerAccount;
+      String email,
+      String displayName,
+      String password,
+      void Function(Exception e) error,
+      ) registerAccount;
   final void Function() signOut;
 
   @override
@@ -69,7 +69,7 @@ class Authentication extends StatelessWidget {
           email: email!,
           login: (email, password) {
             signInWithEmailAndPassword(email, password,
-                (e) => _showErrorDialog(context, 'Logowanie zakończone niepowodzeniem', e));
+                    (e) => _showErrorDialog(context, 'Logowanie zakończone niepowodzeniem', e));
           },
         );
       case ApplicationLoginState.register:
@@ -79,15 +79,15 @@ class Authentication extends StatelessWidget {
             cancelRegistration();
           },
           registerAccount: (
-            email,
-            displayName,
-            password,
-          ) {
+              email,
+              displayName,
+              password,
+              ) {
             registerAccount(
                 email,
                 displayName,
                 password,
-                (e) =>
+                    (e) =>
                     _showErrorDialog(context, 'Nie udało sie utworzyć nowego konta', e));
           },
         );
@@ -176,6 +176,7 @@ class _EmailFormState extends State<EmailForm> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
+                    style: TextStyle(color: Colors.black54),
                     controller: _controller,
                     decoration: const InputDecoration(
                       hintText: 'Podaj swój adres email',
@@ -222,7 +223,7 @@ class RegisterForm extends StatefulWidget {
   });
   final String email;
   final void Function(String email, String displayName, String password)
-      registerAccount;
+  registerAccount;
   final void Function() cancel;
   @override
   _RegisterFormState createState() => _RegisterFormState();
