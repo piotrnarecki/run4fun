@@ -90,8 +90,15 @@ class HomeState extends State<Home> {
       _timer = _timer + 1;
       globals.counter = globals.counter + 2;
 
+      longitude = locatron.longitude;
+
       setState(() {
-        _timer = _timer;
+        //_timer = globals.currentLongitude;
+
+//        latitude = globals.currentLatitude;
+//
+//        longitude = longitude;
+
         myCounter = globals.counter;
       });
     });
@@ -100,6 +107,7 @@ class HomeState extends State<Home> {
   void _stopTimer() {
     if (myTimer.isActive) {
       myTimer.cancel();
+      locatron.stopLocationStream();
     }
     setState(() {});
   }
@@ -116,7 +124,7 @@ class HomeState extends State<Home> {
   @override
   initState() {
     super.initState();
-    checkGps();
+    //checkGps();
 
     trackLocation = false;
     positions = null;
@@ -193,7 +201,8 @@ class HomeState extends State<Home> {
         });
       });
 
-      streamSubscription.onDone(() => setState(() {
+      streamSubscription.onDone(() =>
+          setState(() {
             trackLocation = false;
           }));
     }
@@ -233,9 +242,10 @@ class HomeState extends State<Home> {
     });
   }
 
+  //// TUTAJ METODY DO PRZYCISKOW
+
   startTraining() {
     locatron.startLocationStream();
-
     _startTimer();
   }
 
@@ -258,6 +268,8 @@ class HomeState extends State<Home> {
 
   saveTraining() {}
 
+  //// TUTAJ INTERFACE
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -272,10 +284,10 @@ class HomeState extends State<Home> {
       ),
       body: Center(
           child: Container(
-        child: ListView(
-          children: [
+            child: ListView(
+              children: [
             Text(
-              "${latitude} , ${longitude}",
+            "${latitude} , ${longitude}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -314,26 +326,28 @@ class HomeState extends State<Home> {
                 style: TextStyle(fontSize: 30),
               ),
             ),
-            TextButton(
-              onPressed: buttonOnPressed,
-              onLongPress: clearDistance,
-              child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 30, color: colorOfButton),
+              TextButton(
+                onPressed: buttonOnPressed, // buttonPressed
+                onLongPress: clearDistance,
+                child: Text(
+                  buttonText,
+                  style: TextStyle(fontSize: 30, color: colorOfButton),
+                ),
               ),
-            ),
-            TextButton(
-              onPressed: () {
-                endTraining(context);
-              },
-              child: Text(
-                "end training",
-                style: TextStyle(fontSize: 30, color: Colors.white),
+
+
+              TextButton(
+                onPressed: () {
+                  endTraining(context);
+                },
+                child: Text(
+                  "end training",
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
               ),
+              ],
             ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }

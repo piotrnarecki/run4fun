@@ -6,3 +6,7 @@ import 'package:run4fun/training_class.dart';
 
 
 int counter=0;
+
+
+var currentLatitude;
+var currentLongitude;
