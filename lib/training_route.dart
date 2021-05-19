@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:run4fun/locatron.dart';
 
 import 'after_training_route.dart';
 
@@ -31,6 +32,10 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  // Locatron
+
+  var locatron = Locatron();
+
   // global variables
 
   var myCounter = 0;
@@ -85,15 +90,8 @@ class HomeState extends State<Home> {
       _timer = _timer + 1;
       globals.counter = globals.counter + 2;
 
-//      longitude = locatron.longitude;
-
       setState(() {
-        //_timer = globals.currentLongitude;
-
-//        latitude = globals.currentLatitude;
-//
-//        longitude = longitude;
-
+        _timer = _timer;
         myCounter = globals.counter;
       });
     });
@@ -102,7 +100,6 @@ class HomeState extends State<Home> {
   void _stopTimer() {
     if (myTimer.isActive) {
       myTimer.cancel();
-      //locatron.stopLocationStream();
     }
     setState(() {});
   }
@@ -116,14 +113,10 @@ class HomeState extends State<Home> {
 
 ////////////end of timer
 
-  //training
-
-  //
-
   @override
   initState() {
     super.initState();
-    //checkGps();
+    checkGps();
 
     trackLocation = false;
     positions = null;
@@ -240,9 +233,9 @@ class HomeState extends State<Home> {
     });
   }
 
-  //// TUTAJ METODY DO PRZYCISKOW
-
   startTraining() {
+    locatron.startLocationStream();
+
     _startTimer();
   }
 
@@ -264,8 +257,6 @@ class HomeState extends State<Home> {
   }
 
   saveTraining() {}
-
-  //// TUTAJ INTERFACE
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +315,7 @@ class HomeState extends State<Home> {
               ),
             ),
             TextButton(
-              onPressed: buttonOnPressed, // buttonPressed
+              onPressed: buttonOnPressed,
               onLongPress: clearDistance,
               child: Text(
                 buttonText,
