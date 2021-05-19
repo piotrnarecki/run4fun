@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:run4fun/locatron.dart';
 
 import 'after_training_route.dart';
 
@@ -32,10 +31,6 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  // Locatron
-
-  var locatron = Locatron();
-
   // global variables
 
   var myCounter = 0;
@@ -90,7 +85,7 @@ class HomeState extends State<Home> {
       _timer = _timer + 1;
       globals.counter = globals.counter + 2;
 
-      longitude = locatron.longitude;
+//      longitude = locatron.longitude;
 
       setState(() {
         //_timer = globals.currentLongitude;
@@ -107,7 +102,7 @@ class HomeState extends State<Home> {
   void _stopTimer() {
     if (myTimer.isActive) {
       myTimer.cancel();
-      locatron.stopLocationStream();
+      //locatron.stopLocationStream();
     }
     setState(() {});
   }
@@ -120,6 +115,10 @@ class HomeState extends State<Home> {
   }
 
 ////////////end of timer
+
+  //training
+
+  //
 
   @override
   initState() {
@@ -201,8 +200,7 @@ class HomeState extends State<Home> {
         });
       });
 
-      streamSubscription.onDone(() =>
-          setState(() {
+      streamSubscription.onDone(() => setState(() {
             trackLocation = false;
           }));
     }
@@ -245,7 +243,6 @@ class HomeState extends State<Home> {
   //// TUTAJ METODY DO PRZYCISKOW
 
   startTraining() {
-    locatron.startLocationStream();
     _startTimer();
   }
 
@@ -284,10 +281,10 @@ class HomeState extends State<Home> {
       ),
       body: Center(
           child: Container(
-            child: ListView(
-              children: [
+        child: ListView(
+          children: [
             Text(
-            "${latitude} , ${longitude}",
+              "${latitude} , ${longitude}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -326,28 +323,26 @@ class HomeState extends State<Home> {
                 style: TextStyle(fontSize: 30),
               ),
             ),
-              TextButton(
-                onPressed: buttonOnPressed, // buttonPressed
-                onLongPress: clearDistance,
-                child: Text(
-                  buttonText,
-                  style: TextStyle(fontSize: 30, color: colorOfButton),
-                ),
+            TextButton(
+              onPressed: buttonOnPressed, // buttonPressed
+              onLongPress: clearDistance,
+              child: Text(
+                buttonText,
+                style: TextStyle(fontSize: 30, color: colorOfButton),
               ),
-
-
-              TextButton(
-                onPressed: () {
-                  endTraining(context);
-                },
-                child: Text(
-                  "end training",
-                  style: TextStyle(fontSize: 30, color: Colors.white),
-                ),
-              ),
-              ],
             ),
-          )),
+            TextButton(
+              onPressed: () {
+                endTraining(context);
+              },
+              child: Text(
+                "end training",
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }
