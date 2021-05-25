@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:run4fun/widgets.dart';
-
-import 'main.dart';
-
-import 'settings_route.dart';
-import 'training_route.dart';
 
 import 'login_route.dart';
 
 import 'dart:core';
+import 'training_summary.dart';
 
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
@@ -20,11 +15,12 @@ class AfterTraining extends StatelessWidget {
   final List<String> trainingList;
 
   void sendTrainingToDatabase() {
-
     // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
 
     // tutaj ma wysyłać trening do bazy danych trening
   }
+
+  void createTrainingSummary() {}
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +33,8 @@ class AfterTraining extends StatelessWidget {
               title: Text('After training route'),
             ),
             body: Center(
-              child: Column(children: [
+              child: ListView(children: [
+                TrainingSummary(trainingList),
                 ElevatedButton(
                   child: Text('Main route'),
                   onPressed: () {
@@ -59,7 +56,8 @@ class AfterTraining extends StatelessWidget {
                       GuestBook(
                         addMessage: (String message) =>
                             appState.addMessageToGuestBook(message),
-                        messages: appState.guestBookMessages, trainingList: trainingList,
+                        messages: appState.guestBookMessages,
+                        trainingList: trainingList,
                       ),
                     ],
                   ),

@@ -167,6 +167,10 @@ class TrainingViewState extends State<TrainingView> {
     });
   }
 
+  //
+
+  //TimerView timerView;
+
   // METODY PRZYCISKOW
 
   buttonPressed() {
@@ -207,7 +211,6 @@ class TrainingViewState extends State<TrainingView> {
     var totalDistance = distance;
     var totalTime = double.parse(_seconds.toString());
 
-
 //    var myTraining = Training(totalDistance, totalTime, endDate);
 //
 //    setState(() {
@@ -219,9 +222,7 @@ class TrainingViewState extends State<TrainingView> {
       endDate.toString(),
       totalTime.toString(),
       totalDistance.toString(),
-
     ];
-
 
 //    var trainingList = [
 //      latitude.toString(),
@@ -231,15 +232,12 @@ class TrainingViewState extends State<TrainingView> {
 //      heading.toString()
 //    ];
 
-
 // tutaj dodaj do bazy
 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
     );
-
-
   }
 
   // METODY TIMERA
@@ -312,17 +310,13 @@ class TrainingViewState extends State<TrainingView> {
         child: ListView(
           children: [
 //
+            //TimerView(),
             Text(
               "${latitude} , ${longitude}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
-              "$_seconds ",
-              style: TextStyle(fontSize: 20),
-            ),
-
-            Text(
-              "time display: ${_timeDisplay} ",
+              "$_seconds s}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -366,3 +360,82 @@ class TrainingViewState extends State<TrainingView> {
     );
   }
 }
+
+//class TimerView extends StatefulWidget {
+//  @override
+//  TimerViewState createState() => TimerViewState();
+//}
+//
+//class TimerViewState extends State<TimerView> {
+//  int _seconds = 0;
+//  int _minutes = 0;
+//  int _hours = 0;
+//
+//  var _timeDisplay;
+//  static const oneSec = const Duration(seconds: 1);
+//
+//  late Timer myTimer;
+//
+//  void _startTimer() {
+//    myTimer = new Timer.periodic(oneSec, (timer) {
+//      _seconds = _seconds + 1;
+//
+//      setState(() {
+//        if (_seconds == 61) {
+//          _minutes = _minutes + 1;
+//          _seconds = 0;
+//        }
+//
+//        if (_minutes == 61) {
+//          _hours = _hours + 1;
+//          _minutes = 0;
+//        }
+//
+//        var secondsDisplay = "$_seconds";
+//        var minutesDisplay = "$_minutes";
+//        var hoursDisplay = "$_hours";
+//
+//        if (_seconds < 10) {
+//          secondsDisplay = "0" + secondsDisplay;
+//        }
+//        if (_minutes < 10) {
+//          minutesDisplay = "0" + minutesDisplay;
+//        }
+//        if (_hours < 10) {
+//          hoursDisplay = "0" + hoursDisplay;
+//        }
+//
+//        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
+//      });
+//    });
+//  }
+//
+//  void _stopTimer() {
+//    if (myTimer.isActive) {
+//      myTimer.cancel();
+//    }
+//    setState(() {});
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Center(
+//        child: Container(
+//      child: ListView(
+//        children: [
+////
+//
+//          Text(
+//            "$_seconds ",
+//            style: TextStyle(fontSize: 20),
+//          ),
+//
+//          Text(
+//            "time display: ${_timeDisplay} ",
+//            style: TextStyle(fontSize: 20),
+//          ),
+//        ],
+//      ),
+//    ));
+//  }
+//}
