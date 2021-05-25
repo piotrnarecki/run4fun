@@ -3,6 +3,7 @@ import 'after_training_route.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'dart:core';
+import 'training.dart';
 
 // W TEJ KLASIE BEDZIE TRENING
 
@@ -24,8 +25,10 @@ class TrainingView extends StatefulWidget {
 }
 
 class TrainingViewState extends State<TrainingView> {
+  var endDate;
+
   var totalDistance;
-  var totalTime;
+  var _totalTime;
 
   var isRunning;
 
@@ -136,7 +139,6 @@ class TrainingViewState extends State<TrainingView> {
       print("Success");
     } else {
       print("Failed");
-      
     }
   }
 
@@ -200,20 +202,44 @@ class TrainingViewState extends State<TrainingView> {
   endTraining(context) {
     stopTraining();
 
-//    var Training=
+    endDate = DateTime.now();
+
+    var totalDistance = distance;
+    var totalTime = double.parse(_seconds.toString());
+
+
+//    var myTraining = Training(totalDistance, totalTime, endDate);
+//
+//    setState(() {
+//      totalDistance = totalDistance;
+//
+//    });
 
     var trainingList = [
-      latitude.toString(),
-      longitude.toString(),
-      distance.toString(),
-      speed.toString(),
-      heading.toString()
+      endDate.toString(),
+      totalTime.toString(),
+      totalDistance.toString(),
+
     ];
+
+
+//    var trainingList = [
+//      latitude.toString(),
+//      longitude.toString(),
+//      distance.toString(),
+//      speed.toString(),
+//      heading.toString()
+//    ];
+
+
+// tutaj dodaj do bazy
 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
     );
+
+
   }
 
   // METODY TIMERA
@@ -230,38 +256,33 @@ class TrainingViewState extends State<TrainingView> {
   void _startTimer() {
     myTimer = new Timer.periodic(oneSec, (timer) {
       _seconds = _seconds + 1;
-//      totalTime = totalTime + 1;
-//
-//      if (_seconds == 61) {
-//        _minutes = _minutes + 1;
-//        _seconds = 0;
-//      }
-//
-//      if (_minutes == 61) {
-//        _hours = _hours + 1;
-//        _minutes = 0;
-//      }
-//
-//      var secondsDisplay = "$_seconds";
-//      var minutesDisplay = "$_minutes";
-//      var hoursDisplay = "$_hours";
-//
-//      if (_seconds < 10) {
-//        secondsDisplay = "0" + secondsDisplay;
-//      }
-//      if (_minutes < 10) {
-//        minutesDisplay = "0" + minutesDisplay;
-//      }
-//      if (_hours < 10) {
-//        hoursDisplay = "0" + hoursDisplay;
-//      }
-
-      //_timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
-
+      _totalTime = _totalTime + 1;
       setState(() {
-//        _timeDisplay = "seconds";
-        _seconds = _seconds;
-//totalTime = totalTime;
+        if (_seconds == 61) {
+          _minutes = _minutes + 1;
+          _seconds = 0;
+        }
+
+        if (_minutes == 61) {
+          _hours = _hours + 1;
+          _minutes = 0;
+        }
+
+        var secondsDisplay = "$_seconds";
+        var minutesDisplay = "$_minutes";
+        var hoursDisplay = "$_hours";
+
+        if (_seconds < 10) {
+          secondsDisplay = "0" + secondsDisplay;
+        }
+        if (_minutes < 10) {
+          minutesDisplay = "0" + minutesDisplay;
+        }
+        if (_hours < 10) {
+          hoursDisplay = "0" + hoursDisplay;
+        }
+
+        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
       });
     });
   }
@@ -290,6 +311,7 @@ class TrainingViewState extends State<TrainingView> {
           child: Container(
         child: ListView(
           children: [
+//
             Text(
               "${latitude} , ${longitude}",
               style: TextStyle(fontSize: 20),
@@ -298,8 +320,9 @@ class TrainingViewState extends State<TrainingView> {
               "$_seconds ",
               style: TextStyle(fontSize: 20),
             ),
+
             Text(
-              "$_timeDisplay ",
+              "time display: ${_timeDisplay} ",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -307,7 +330,7 @@ class TrainingViewState extends State<TrainingView> {
               style: TextStyle(fontSize: 30),
             ),
             Text(
-              "$listSize",
+              "locations: $listSize",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -330,6 +353,12 @@ class TrainingViewState extends State<TrainingView> {
                 "end training",
                 style: TextStyle(fontSize: 30, color: Colors.black),
               ),
+            ),
+            Text(
+              "total distance: $totalDistance",
+            ),
+            Text(
+              "total time: $_totalTime",
             ),
           ],
         ),
