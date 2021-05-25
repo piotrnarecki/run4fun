@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
-
-import 'settings_route.dart';
-import 'training_route.dart';
-import 'main.dart';
 import 'after_training_route.dart';
-
 import 'package:geolocator/geolocator.dart';
-
 import 'dart:async';
-
 import 'dart:core';
 
 // W TEJ KLASIE BEDZIE TRENING
-
-
-// nowa wersja
-
-// jak trening sie zakonczy to przekaze dane z treningu do jakieś globalnej tablicy a i z
-// niej w AFTER_TRAINING_ROUTE będzie przesyłane do bazy danych
-
 
 class TrainingRoute extends StatelessWidget {
   @override
@@ -27,18 +13,21 @@ class TrainingRoute extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
       theme: ThemeData.light(),
-      home: Home(),
+      home: TrainingView(),
     );
   }
 }
 
-class Home extends StatefulWidget {
+class TrainingView extends StatefulWidget {
   @override
-  HomeState createState() => HomeState();
+  TrainingViewState createState() => TrainingViewState();
 }
 
-class HomeState extends State<Home> {
-  var isPressed;
+class TrainingViewState extends State<TrainingView> {
+  var totalDistance;
+  var totalTime;
+
+  var isRunning;
 
   var buttonText;
 
@@ -46,23 +35,20 @@ class HomeState extends State<Home> {
   var longitude;
 
   var startLatitude;
-
   var startLongitude;
 
   var endLatitude;
-
   var endLongitude;
 
-  var distance;
-
+  var distance = 0.0;
   var speed;
+
   var heading;
 
   var listOfLocations = [];
   var listSize = 0;
 
   var colorOfSpeed = Colors.black;
-
   var colorOfButton = Colors.black;
 
   var positions = null;
@@ -77,40 +63,21 @@ class HomeState extends State<Home> {
     trackLocation = false;
     positions = null;
 
-    isPressed = false;
+    isRunning = false;
 
     buttonText = "Start";
   }
 
-  buttonOnPressed() {
-    setState(() {
-      if (isPressed == true) {
-        buttonText = "Start";
-        isPressed = false;
-        colorOfButton = Colors.green;
-      } else {
-        buttonText = "Stop";
-        isPressed = true;
-        colorOfButton = Colors.red;
-      }
-    });
+//  var locationOptions = LocationOptions(
+//    accuracy: LocationAccuracy.bestForNavigation,
+//    distanceFilter: 0,
+//    timeInterval: 0,
+//  );
 
-    getLocations();
-  }
+  // METODY LOKALIZACJI
 
-  var locationOptions = LocationOptions(
-    accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 0,
-    timeInterval: 0,
-  );
-
-  getLocations() {
-    if (trackLocation) {
-      setState(() => trackLocation = false);
-      streamSubscription.cancel();
-      //streamSubscription = null;
-      positions = null;
-    } else {
+  startLocations() {
+    if (trackLocation == false) {
       setState(() => trackLocation = true);
 
       streamSubscription = Geolocator.getPositionStream().listen((result) {
@@ -121,11 +88,11 @@ class HomeState extends State<Home> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          heading = num.parse(location.heading.toStringAsFixed(0));
-
           latitude = num.parse(location.latitude.toStringAsFixed(3));
 
           longitude = num.parse(location.longitude.toStringAsFixed(3));
+
+          heading = location.heading;
 
           listOfLocations.add(location);
 
@@ -133,7 +100,8 @@ class HomeState extends State<Home> {
 
           var length = listOfLocations.length;
 
-          if (length > 2 && speed > 1) {
+          if (length > 2 && speed > 0.5) {
+            // zmienic min speed
             colorOfSpeed = Colors.black;
 
             if (speed > 20) {
@@ -141,7 +109,7 @@ class HomeState extends State<Home> {
             }
 
             distance = distance + calculateDistanse(listOfLocations);
-            distance = num.parse(distance.toStringAsFixed(3));
+            distance = double.parse(distance.toStringAsFixed(3));
           } else {
             //distance = 0;
             colorOfSpeed = Colors.red;
@@ -150,8 +118,15 @@ class HomeState extends State<Home> {
       });
 
       streamSubscription.onDone(() => setState(() {
-        trackLocation = false;
-      }));
+            trackLocation = false;
+          }));
+    }
+  }
+
+  stopLocations() {
+    if (trackLocation == true) {
+      streamSubscription.cancel();
+      trackLocation = false;
     }
   }
 
@@ -161,6 +136,7 @@ class HomeState extends State<Home> {
       print("Success");
     } else {
       print("Failed");
+      
     }
   }
 
@@ -182,8 +158,6 @@ class HomeState extends State<Home> {
     return distance;
   }
 
-
-
   clearDistance() {
     setState(() {
       distance = 0;
@@ -191,14 +165,50 @@ class HomeState extends State<Home> {
     });
   }
 
+  // METODY PRZYCISKOW
+
+  buttonPressed() {
+    if (isRunning == true) {
+      setState(() {
+        isRunning = false;
+        buttonText = "Start";
+        colorOfButton = Colors.green;
+        stopTraining();
+      });
+    } else {
+      setState(() {
+        isRunning = true;
+        buttonText = "Stop";
+        colorOfButton = Colors.red;
+      });
+      startTraining();
+    }
+  }
+
+  startTraining() {
+    _startTimer();
+    trackLocation = false;
+    startLocations();
+  }
+
+  stopTraining() {
+    _stopTimer();
+    trackLocation = true;
+    stopLocations();
+  }
+
   endTraining(context) {
-    var trainingList = [latitude.toString(), longitude.toString(), distance.toString(), speed.toString(), heading.toString()];
-    //var trainingList = ['latitude', 'longitude', 'distance', 'speed', 'heading'];
+    stopTraining();
 
+//    var Training=
 
-// tutaj dodaj do bazy
-
-
+    var trainingList = [
+      latitude.toString(),
+      longitude.toString(),
+      distance.toString(),
+      speed.toString(),
+      heading.toString()
+    ];
 
     Navigator.push(
       context,
@@ -206,58 +216,124 @@ class HomeState extends State<Home> {
     );
   }
 
+  // METODY TIMERA
+
+  int _seconds = 0;
+  int _minutes = 0;
+  int _hours = 0;
+
+  var _timeDisplay;
+  static const oneSec = const Duration(seconds: 1);
+
+  late Timer myTimer;
+
+  void _startTimer() {
+    myTimer = new Timer.periodic(oneSec, (timer) {
+      _seconds = _seconds + 1;
+//      totalTime = totalTime + 1;
+//
+//      if (_seconds == 61) {
+//        _minutes = _minutes + 1;
+//        _seconds = 0;
+//      }
+//
+//      if (_minutes == 61) {
+//        _hours = _hours + 1;
+//        _minutes = 0;
+//      }
+//
+//      var secondsDisplay = "$_seconds";
+//      var minutesDisplay = "$_minutes";
+//      var hoursDisplay = "$_hours";
+//
+//      if (_seconds < 10) {
+//        secondsDisplay = "0" + secondsDisplay;
+//      }
+//      if (_minutes < 10) {
+//        minutesDisplay = "0" + minutesDisplay;
+//      }
+//      if (_hours < 10) {
+//        hoursDisplay = "0" + hoursDisplay;
+//      }
+
+      //_timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
+
+      setState(() {
+//        _timeDisplay = "seconds";
+        _seconds = _seconds;
+//totalTime = totalTime;
+      });
+    });
+  }
+
+  void _stopTimer() {
+    if (myTimer.isActive) {
+      myTimer.cancel();
+    }
+    setState(() {});
+  }
+
+  // INTERFACE
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: Text('I am here'),
-        actions: <Widget>[
-//          FlatButton(
-//            child: Text("Get Location"),
-//            onPressed: getLocations,
-//          )
-        ],
-      ),
+//        actions: <Widget>[
+////          FlatButton(
+////            child: Text("Get Location"),
+////            onPressed: getLocations,
+////          )
+//        ],
+          ),
       body: Center(
           child: Container(
-            child: ListView(
-              children: [
-                Text(
-                  "${latitude} , ${longitude}",
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  "$distance m",
-                  style: TextStyle(fontSize: 30),
-                ),
-                Text(
-                  "$listSize",
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  "$speed m/s",
-                  style: TextStyle(fontSize: 30, color: colorOfSpeed),
-                ),
-                TextButton(
-                  onPressed: buttonOnPressed,
-                  onLongPress: clearDistance,
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(fontSize: 30, color: colorOfButton),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    endTraining(context);
-                  },
-                  child: Text(
-                    "end training",
-                    style: TextStyle(fontSize: 30, color: Colors.black),
-                  ),
-                ),
-              ],
+        child: ListView(
+          children: [
+            Text(
+              "${latitude} , ${longitude}",
+              style: TextStyle(fontSize: 20),
             ),
-          )),
+            Text(
+              "$_seconds ",
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              "$_timeDisplay ",
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              "$distance m",
+              style: TextStyle(fontSize: 30),
+            ),
+            Text(
+              "$listSize",
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              "$speed m/s",
+              style: TextStyle(fontSize: 30, color: colorOfSpeed),
+            ),
+            TextButton(
+              onPressed: buttonPressed,
+              onLongPress: clearDistance,
+              child: Text(
+                buttonText,
+                style: TextStyle(fontSize: 30, color: colorOfButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                endTraining(context);
+              },
+              child: Text(
+                "end training",
+                style: TextStyle(fontSize: 30, color: Colors.black),
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

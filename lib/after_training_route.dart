@@ -20,7 +20,6 @@ class AfterTraining extends StatelessWidget {
   final List<String> trainingList;
 
   void sendTrainingToDatabase() {
-
     // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
 
     // tutaj ma wysyłać trening do bazy danych trening
@@ -37,7 +36,7 @@ class AfterTraining extends StatelessWidget {
               title: Text('After training route'),
             ),
             body: Center(
-              child: Column(children: [
+              child: ListView(children: [
                 ElevatedButton(
                   child: Text('Main route'),
                   onPressed: () {
@@ -59,7 +58,8 @@ class AfterTraining extends StatelessWidget {
                       GuestBook(
                         addMessage: (String message) =>
                             appState.addMessageToGuestBook(message),
-                        messages: appState.guestBookMessages, trainingList: trainingList,
+                        messages: appState.guestBookMessages,
+                        trainingList: trainingList,
                       ),
                     ],
                   ),
