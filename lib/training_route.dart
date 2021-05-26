@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:run4fun/locatron.dart';
-
 import 'after_training_route.dart';
-
 import 'package:geolocator/geolocator.dart';
-
 import 'dart:async';
-
-import 'globalVariables.dart' as globals;
+import 'dart:core';
+import 'training.dart';
 
 // W TEJ KLASIE BEDZIE TRENING
-
-// jak trening sie zakonczy to przekaze dane z treningu do jakieś globalnej tablicy a i z
-// niej w AFTER_TRAINING_ROUTE będzie przesyłane do bazy danych
 
 class TrainingRoute extends StatelessWidget {
   @override
@@ -20,29 +13,24 @@ class TrainingRoute extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
-      theme: ThemeData.dark(),
-      home: Home(),
+      theme: ThemeData.light(),
+      home: TrainingView(),
     );
   }
 }
 
-class Home extends StatefulWidget {
+class TrainingView extends StatefulWidget {
   @override
-  HomeState createState() => HomeState();
+  TrainingViewState createState() => TrainingViewState();
 }
 
-class HomeState extends State<Home> {
-  // Locatron
+class TrainingViewState extends State<TrainingView> {
+  var endDate;
 
-  var locatron = Locatron();
+  var totalDistance;
+  var _totalTime;
 
-  // global variables
-
-  var myCounter = 0;
-
-  //
-
-  var isPressed;
+  var isRunning;
 
   var buttonText;
 
@@ -50,68 +38,25 @@ class HomeState extends State<Home> {
   var longitude;
 
   var startLatitude;
-
   var startLongitude;
 
   var endLatitude;
-
   var endLongitude;
 
-  var distance;
-
+  var distance = 0.0;
   var speed;
-  var heading;
 
-  var time;
+  var heading;
 
   var listOfLocations = [];
   var listSize = 0;
 
-  var colorOfSpeed = Colors.white;
-
-  var colorOfButton = Colors.white;
+  var colorOfSpeed = Colors.black;
+  var colorOfButton = Colors.black;
 
   var positions = null;
   late StreamSubscription<Position> streamSubscription;
   bool trackLocation = false;
-
-///// start of timer
-
-  int _timer = 0;
-
-  static const oneSec = const Duration(seconds: 1);
-
-  //new Timer.periodic(oneSec, (Timer t) => print('hi!'));
-
-  late Timer myTimer;
-
-  void _startTimer() {
-    myTimer = new Timer.periodic(oneSec, (timer) {
-      _timer = _timer + 1;
-      globals.counter = globals.counter + 2;
-
-      setState(() {
-        _timer = _timer;
-        myCounter = globals.counter;
-      });
-    });
-  }
-
-  void _stopTimer() {
-    if (myTimer.isActive) {
-      myTimer.cancel();
-    }
-    setState(() {});
-  }
-
-  void _resetTimer() {
-    _stopTimer();
-    setState(() {
-      _timer = 0;
-    });
-  }
-
-////////////end of timer
 
   @override
   initState() {
@@ -121,40 +66,21 @@ class HomeState extends State<Home> {
     trackLocation = false;
     positions = null;
 
-    isPressed = false;
+    isRunning = false;
 
     buttonText = "Start";
   }
 
-  buttonOnPressed() {
-    setState(() {
-      if (isPressed == true) {
-        buttonText = "Start";
-        isPressed = false;
-        colorOfButton = Colors.green;
-      } else {
-        buttonText = "Stop";
-        isPressed = true;
-        colorOfButton = Colors.red;
-      }
-    });
+//  var locationOptions = LocationOptions(
+//    accuracy: LocationAccuracy.bestForNavigation,
+//    distanceFilter: 0,
+//    timeInterval: 0,
+//  );
 
-    getLocations();
-  }
+  // METODY LOKALIZACJI
 
-  var locationOptions = LocationOptions(
-    accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 0,
-    timeInterval: 0,
-  );
-
-  getLocations() {
-    if (trackLocation) {
-      setState(() => trackLocation = false);
-      streamSubscription.cancel();
-      //streamSubscription = null;
-      positions = null;
-    } else {
+  startLocations() {
+    if (trackLocation == false) {
       setState(() => trackLocation = true);
 
       streamSubscription = Geolocator.getPositionStream().listen((result) {
@@ -165,11 +91,11 @@ class HomeState extends State<Home> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          heading = num.parse(location.heading.toStringAsFixed(0));
-
           latitude = num.parse(location.latitude.toStringAsFixed(3));
 
           longitude = num.parse(location.longitude.toStringAsFixed(3));
+
+          heading = location.heading;
 
           listOfLocations.add(location);
 
@@ -177,15 +103,16 @@ class HomeState extends State<Home> {
 
           var length = listOfLocations.length;
 
-          if (length > 2 && speed > 1) {
-            colorOfSpeed = Colors.white;
+          if (length > 2 && speed > 0.5) {
+            // zmienic min speed
+            colorOfSpeed = Colors.black;
 
             if (speed > 20) {
               colorOfSpeed = Colors.blue;
             }
 
             distance = distance + calculateDistanse(listOfLocations);
-            distance = num.parse(distance.toStringAsFixed(3));
+            distance = double.parse(distance.toStringAsFixed(3));
           } else {
             //distance = 0;
             colorOfSpeed = Colors.red;
@@ -196,6 +123,13 @@ class HomeState extends State<Home> {
       streamSubscription.onDone(() => setState(() {
             trackLocation = false;
           }));
+    }
+  }
+
+  stopLocations() {
+    if (trackLocation == true) {
+      streamSubscription.cancel();
+      trackLocation = false;
     }
   }
 
@@ -233,49 +167,156 @@ class HomeState extends State<Home> {
     });
   }
 
-  startTraining() {
-    locatron.startLocationStream();
+  //
 
-    _startTimer();
+  //TimerView timerView;
+
+  // METODY PRZYCISKOW
+
+  buttonPressed() {
+    if (isRunning == true) {
+      setState(() {
+        isRunning = false;
+        buttonText = "Start";
+        colorOfButton = Colors.green;
+        stopTraining();
+      });
+    } else {
+      setState(() {
+        isRunning = true;
+        buttonText = "Stop";
+        colorOfButton = Colors.red;
+      });
+      startTraining();
+    }
   }
 
-  pauseTraining() {
+  startTraining() {
+    _startTimer();
+    trackLocation = false;
+    startLocations();
+  }
+
+  stopTraining() {
     _stopTimer();
+    trackLocation = true;
+    stopLocations();
   }
 
   endTraining(context) {
-    //locatron.stopLocationStream();
+    stopTraining();
 
-    //_stopTimer();
+    endDate = DateTime.now();
 
-    //saveTraining();
+    var totalDistance = distance;
+    var totalTime = double.parse(_seconds.toString());
+
+//    var myTraining = Training(totalDistance, totalTime, endDate);
+//
+//    setState(() {
+//      totalDistance = totalDistance;
+//
+//    });
+
+    var trainingList = [
+      endDate.toString(),
+      totalTime.toString(),
+      totalDistance.toString(),
+    ];
+
+//    var trainingList = [
+//      latitude.toString(),
+//      longitude.toString(),
+//      distance.toString(),
+//      speed.toString(),
+//      heading.toString()
+//    ];
+
+// tutaj dodaj do bazy
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => (AfterTraining())),
+      MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
     );
   }
 
-  saveTraining() {}
+  // METODY TIMERA
+
+  int _seconds = 0;
+  int _minutes = 0;
+  int _hours = 0;
+
+  var _timeDisplay;
+  static const oneSec = const Duration(seconds: 1);
+
+  late Timer myTimer;
+
+  void _startTimer() {
+    myTimer = new Timer.periodic(oneSec, (timer) {
+      _seconds = _seconds + 1;
+      _totalTime = _totalTime + 1;
+      setState(() {
+        if (_seconds == 61) {
+          _minutes = _minutes + 1;
+          _seconds = 0;
+        }
+
+        if (_minutes == 61) {
+          _hours = _hours + 1;
+          _minutes = 0;
+        }
+
+        var secondsDisplay = "$_seconds";
+        var minutesDisplay = "$_minutes";
+        var hoursDisplay = "$_hours";
+
+        if (_seconds < 10) {
+          secondsDisplay = "0" + secondsDisplay;
+        }
+        if (_minutes < 10) {
+          minutesDisplay = "0" + minutesDisplay;
+        }
+        if (_hours < 10) {
+          hoursDisplay = "0" + hoursDisplay;
+        }
+
+        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
+      });
+    });
+  }
+
+  void _stopTimer() {
+    if (myTimer.isActive) {
+      myTimer.cancel();
+    }
+    setState(() {});
+  }
+
+  // INTERFACE
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: Text('I am here'),
-        actions: <Widget>[
-//          FlatButton(
-//            child: Text("Get Location"),
-//            onPressed: getLocations,
-//          )
-        ],
-      ),
+//        actions: <Widget>[
+////          FlatButton(
+////            child: Text("Get Location"),
+////            onPressed: getLocations,
+////          )
+//        ],
+          ),
       body: Center(
           child: Container(
         child: ListView(
           children: [
+//
+            //TimerView(),
             Text(
               "${latitude} , ${longitude}",
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              "$_seconds s}",
               style: TextStyle(fontSize: 20),
             ),
             Text(
@@ -283,39 +324,15 @@ class HomeState extends State<Home> {
               style: TextStyle(fontSize: 30),
             ),
             Text(
-              "$listSize",
+              "locations: $listSize",
               style: TextStyle(fontSize: 20),
             ),
             Text(
               "$speed m/s",
               style: TextStyle(fontSize: 30, color: colorOfSpeed),
             ),
-            Text(
-              "$_timer s",
-              style: TextStyle(fontSize: 30),
-            ),
-            Text(
-              "counter: ${globals.counter} ",
-              style: TextStyle(fontSize: 30),
-            ),
             TextButton(
-              onPressed: _startTimer,
-              onLongPress: clearDistance,
-              child: Text(
-                "start timer",
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            TextButton(
-              onPressed: _stopTimer,
-              onLongPress: _resetTimer,
-              child: Text(
-                "stop timer",
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            TextButton(
-              onPressed: buttonOnPressed,
+              onPressed: buttonPressed,
               onLongPress: clearDistance,
               child: Text(
                 buttonText,
@@ -328,8 +345,14 @@ class HomeState extends State<Home> {
               },
               child: Text(
                 "end training",
-                style: TextStyle(fontSize: 30, color: Colors.white),
+                style: TextStyle(fontSize: 30, color: Colors.black),
               ),
+            ),
+            Text(
+              "total distance: $totalDistance",
+            ),
+            Text(
+              "total time: $_totalTime",
             ),
           ],
         ),
@@ -337,3 +360,82 @@ class HomeState extends State<Home> {
     );
   }
 }
+
+//class TimerView extends StatefulWidget {
+//  @override
+//  TimerViewState createState() => TimerViewState();
+//}
+//
+//class TimerViewState extends State<TimerView> {
+//  int _seconds = 0;
+//  int _minutes = 0;
+//  int _hours = 0;
+//
+//  var _timeDisplay;
+//  static const oneSec = const Duration(seconds: 1);
+//
+//  late Timer myTimer;
+//
+//  void _startTimer() {
+//    myTimer = new Timer.periodic(oneSec, (timer) {
+//      _seconds = _seconds + 1;
+//
+//      setState(() {
+//        if (_seconds == 61) {
+//          _minutes = _minutes + 1;
+//          _seconds = 0;
+//        }
+//
+//        if (_minutes == 61) {
+//          _hours = _hours + 1;
+//          _minutes = 0;
+//        }
+//
+//        var secondsDisplay = "$_seconds";
+//        var minutesDisplay = "$_minutes";
+//        var hoursDisplay = "$_hours";
+//
+//        if (_seconds < 10) {
+//          secondsDisplay = "0" + secondsDisplay;
+//        }
+//        if (_minutes < 10) {
+//          minutesDisplay = "0" + minutesDisplay;
+//        }
+//        if (_hours < 10) {
+//          hoursDisplay = "0" + hoursDisplay;
+//        }
+//
+//        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
+//      });
+//    });
+//  }
+//
+//  void _stopTimer() {
+//    if (myTimer.isActive) {
+//      myTimer.cancel();
+//    }
+//    setState(() {});
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Center(
+//        child: Container(
+//      child: ListView(
+//        children: [
+////
+//
+//          Text(
+//            "$_seconds ",
+//            style: TextStyle(fontSize: 20),
+//          ),
+//
+//          Text(
+//            "time display: ${_timeDisplay} ",
+//            style: TextStyle(fontSize: 20),
+//          ),
+//        ],
+//      ),
+//    ));
+//  }
+//}
