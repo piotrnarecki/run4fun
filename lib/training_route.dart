@@ -50,6 +50,7 @@ class TrainingViewState extends State<TrainingView> {
 
   var listOfLocations = [];
   var listSize = 0;
+  var listOfSpeed = [];
 
   var colorOfSpeed = Colors.black;
   var colorOfButton = Colors.black;
@@ -71,12 +72,6 @@ class TrainingViewState extends State<TrainingView> {
     buttonText = "Start";
   }
 
-//  var locationOptions = LocationOptions(
-//    accuracy: LocationAccuracy.bestForNavigation,
-//    distanceFilter: 0,
-//    timeInterval: 0,
-//  );
-
   // METODY LOKALIZACJI
 
   startLocations() {
@@ -95,8 +90,6 @@ class TrainingViewState extends State<TrainingView> {
 
           longitude = num.parse(location.longitude.toStringAsFixed(3));
 
-          heading = location.heading;
-
           listOfLocations.add(location);
 
           listSize = listOfLocations.length;
@@ -106,6 +99,8 @@ class TrainingViewState extends State<TrainingView> {
           if (length > 2 && speed > 0.5) {
             // zmienic min speed
             colorOfSpeed = Colors.black;
+
+            listOfSpeed.add(speed);
 
             if (speed > 20) {
               colorOfSpeed = Colors.blue;
@@ -222,6 +217,8 @@ class TrainingViewState extends State<TrainingView> {
       endDate.toString(),
       totalTime.toString(),
       totalDistance.toString(),
+      listOfLocations,
+      listOfSpeed
     ];
 
 //    var trainingList = [
@@ -316,7 +313,7 @@ class TrainingViewState extends State<TrainingView> {
               style: TextStyle(fontSize: 20),
             ),
             Text(
-              "$_seconds s}",
+              "$_seconds s",
               style: TextStyle(fontSize: 20),
             ),
             Text(

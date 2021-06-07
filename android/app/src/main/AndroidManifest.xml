@@ -19,6 +19,8 @@
    <application
         android:label="run4fun"
         android:icon="@mipmap/ic_launcher">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyArLbGXGnUz7MpiMe-jI0hmW77zgqUOyHw"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
