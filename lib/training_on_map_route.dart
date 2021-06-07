@@ -26,7 +26,7 @@
 //   late GoogleMapController _controller;
 //   late List<LatLng> routeCoords;
 //   GoogleMapPolyline googleMapPolyline =
-//   new GoogleMapPolyline(apiKey: "AIzaSyArLbGXGnUz7MpiMe-jI0hmW77zgqUOyHw");
+//   new GoogleMapPolyline(apiKey: "API");
 //
 //   getsomePoints() async {
 //     var permissions =
