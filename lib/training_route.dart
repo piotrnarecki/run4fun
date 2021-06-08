@@ -42,6 +42,8 @@ class TrainingViewState extends State<TrainingView> {
 
   var totalDistance;
   var totalTime;
+  var totalCalories;
+  var calories = 0.0;
 
   var isRunning;
 
@@ -57,6 +59,7 @@ class TrainingViewState extends State<TrainingView> {
   var endLongitude;
 
   var distance = 0.0;
+  var minSpeed = 0.5;
   var speed;
 
   var listOfLocations = [];
@@ -119,7 +122,7 @@ class TrainingViewState extends State<TrainingView> {
 
           var length = listOfLocations.length;
 
-          if (length > 2 && speed > 0.5) {
+          if (length > 2 && speed > minSpeed) {
             // zmienic min speed
             colorOfSpeed = Colors.black;
 
@@ -130,6 +133,7 @@ class TrainingViewState extends State<TrainingView> {
             }
 
             distance = distance + calculateDistanse(listOfLocations);
+
             distance = double.parse(distance.toStringAsFixed(3));
           } else {
             colorOfSpeed = Colors.red;
@@ -184,6 +188,24 @@ class TrainingViewState extends State<TrainingView> {
     });
   }
 
+  double calculateCalories(int time, double distance, double speed) {
+    // spalone kilokalorie
+    // https://golf.procon.org/met-values-for-800-activities/
+    // Kcal ~= METS * bodyMassKg * timePerformingHours
+
+    if (weight != null && speed != null && seconds != null) {
+      double mets = 1.6 * speed; // dla biegania
+
+      double kilocalories = mets * weight * (totalTime / 3600);
+
+      // double kilocalories = speed * weight * totalTime;
+
+      return kilocalories;
+    } else {
+      return 70.0;
+    }
+  }
+
   getNiceDistanceDisplay(double distance) {
     if (distance != Null) {
       if (metricDistanse) {
@@ -210,6 +232,11 @@ class TrainingViewState extends State<TrainingView> {
     } else {
       return "0.0";
     }
+  }
+
+  String getNiceCaloriesDisplay(int seconds, double distance, double speed) {
+    calories = calories + calculateCalories(seconds, distance, speed);
+    return calories.toStringAsFixed(2) + " kcal";
   }
 
 // METODY PRZYCISKOW
@@ -310,6 +337,10 @@ class TrainingViewState extends State<TrainingView> {
       getSharedPreferences(); // sprawdzic
       setState(() {
         seconds = seconds + 1;
+
+        // calories = calories + calculateCalories(seconds, distance, speed);
+
+        // calories = calories + 10;
       });
     });
   }
@@ -343,14 +374,13 @@ class TrainingViewState extends State<TrainingView> {
           // mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
+            Padding(padding: EdgeInsets.only(top:10.0)),
+
             Text(
               "w: $weight, h: $height",
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
-
-
-
             Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
@@ -366,6 +396,11 @@ class TrainingViewState extends State<TrainingView> {
               style: TextStyle(fontSize: 50, color: colorOfSpeed),
               textAlign: TextAlign.center,
             ),
+            // Text(
+            //   getNiceCaloriesDisplay(seconds, distance, speed),
+            //   style: TextStyle(fontSize: 50),
+            //   textAlign: TextAlign.center,
+            // ),
             TextButton(
               onPressed: buttonPressed,
               onLongPress: clearDistance,

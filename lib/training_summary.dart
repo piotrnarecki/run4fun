@@ -103,7 +103,7 @@ class TrainingSummary extends StatelessWidget {
     // spalone kilokalorie
     // Kcal ~= METS * bodyMassKg * timePerformingHours
 
-    
+
 
     if(weight!=null && totalDistance>0.0){
     var mets = 6.0; // dla biegania
