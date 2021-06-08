@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:run4fun/locatron.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'after_training_route.dart';
-
 import 'package:geolocator/geolocator.dart';
-
 import 'dart:async';
-
-import 'globalVariables.dart' as globals;
-
+import 'dart:core';
+import 'trainingModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'settings_route.dart';
 // W TEJ KLASIE BEDZIE TRENING
-
-// jak trening sie zakonczy to przekaze dane z treningu do jakieś globalnej tablicy a i z
-// niej w AFTER_TRAINING_ROUTE będzie przesyłane do bazy danych
 
 class TrainingRoute extends StatelessWidget {
   @override
@@ -20,29 +15,37 @@ class TrainingRoute extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
-      theme: ThemeData.dark(),
-      home: Home(),
+      theme: ThemeData.light(),
+      home: TrainingView(),
     );
   }
 }
 
-class Home extends StatefulWidget {
+class TrainingView extends StatefulWidget {
   @override
-  HomeState createState() => HomeState();
+  TrainingViewState createState() => TrainingViewState();
 }
 
-class HomeState extends State<Home> {
-  // Locatron
+class TrainingViewState extends State<TrainingView> {
+  bool metricDistanse = true;
 
-  var locatron = Locatron();
+  //var distanceUnits = "km";
 
-  // global variables
+  bool metricSpeed = true;
 
-  var myCounter = 0;
+  //var speedUnits = "km/h";
 
-  //
+  var height;
+  var weight;
 
-  var isPressed;
+  var endDate;
+
+  var totalDistance;
+  var totalTime;
+  var totalCalories;
+  var calories = 0.0;
+
+  var isRunning;
 
   var buttonText;
 
@@ -50,111 +53,55 @@ class HomeState extends State<Home> {
   var longitude;
 
   var startLatitude;
-
   var startLongitude;
 
   var endLatitude;
-
   var endLongitude;
 
-  var distance;
-
+  var distance = 0.0;
+  var minSpeed = 0.5;
   var speed;
-  var heading;
-
-  var time;
 
   var listOfLocations = [];
   var listSize = 0;
+  List<double> listOfSpeed = [];
 
-  var colorOfSpeed = Colors.white;
-
-  var colorOfButton = Colors.white;
+  var colorOfSpeed = Colors.black;
+  var colorOfButton = Colors.black;
 
   var positions = null;
   late StreamSubscription<Position> streamSubscription;
   bool trackLocation = false;
-
-///// start of timer
-
-  int _timer = 0;
-
-  static const oneSec = const Duration(seconds: 1);
-
-  //new Timer.periodic(oneSec, (Timer t) => print('hi!'));
-
-  late Timer myTimer;
-
-  void _startTimer() {
-    myTimer = new Timer.periodic(oneSec, (timer) {
-      _timer = _timer + 1;
-      globals.counter = globals.counter + 2;
-
-      setState(() {
-        _timer = _timer;
-        myCounter = globals.counter;
-      });
-    });
-  }
-
-  void _stopTimer() {
-    if (myTimer.isActive) {
-      myTimer.cancel();
-    }
-    setState(() {});
-  }
-
-  void _resetTimer() {
-    _stopTimer();
-    setState(() {
-      _timer = 0;
-    });
-  }
-
-////////////end of timer
 
   @override
   initState() {
     super.initState();
     checkGps();
 
+    getSharedPreferences();
+
     trackLocation = false;
     positions = null;
 
-    isPressed = false;
+    isRunning = false;
+    // speed=0.0;
 
     buttonText = "Start";
   }
 
-  buttonOnPressed() {
-    setState(() {
-      if (isPressed == true) {
-        buttonText = "Start";
-        isPressed = false;
-        colorOfButton = Colors.green;
-      } else {
-        buttonText = "Stop";
-        isPressed = true;
-        colorOfButton = Colors.red;
-      }
-    });
+  Future<void> getSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
 
-    getLocations();
+    metricDistanse = prefs.getBool('distance_settings') ?? true;
+    metricSpeed = prefs.getBool('speed_settings') ?? true;
+    height = prefs.getDouble('height') ?? 175;
+    weight = prefs.getDouble('weight') ?? 70;
   }
 
-  var locationOptions = LocationOptions(
-    accuracy: LocationAccuracy.bestForNavigation,
-    distanceFilter: 0,
-    timeInterval: 0,
-  );
+  // METODY LOKALIZACJI
 
-  getLocations() {
-    if (trackLocation) {
-      setState(() => trackLocation = false);
-      streamSubscription.cancel();
-      //streamSubscription = null;
-      positions = null;
-    } else {
+  startLocations() {
+    if (trackLocation == false) {
       setState(() => trackLocation = true);
 
       streamSubscription = Geolocator.getPositionStream().listen((result) {
@@ -164,8 +111,6 @@ class HomeState extends State<Home> {
           positions = location;
 
           speed = num.parse(location.speed.toStringAsFixed(3));
-
-          heading = num.parse(location.heading.toStringAsFixed(0));
 
           latitude = num.parse(location.latitude.toStringAsFixed(3));
 
@@ -177,25 +122,36 @@ class HomeState extends State<Home> {
 
           var length = listOfLocations.length;
 
-          if (length > 2 && speed > 1) {
-            colorOfSpeed = Colors.white;
+          if (length > 2 && speed > minSpeed) {
+            // zmienic min speed
+            colorOfSpeed = Colors.black;
+
+            listOfSpeed.add(speed);
 
             if (speed > 20) {
               colorOfSpeed = Colors.blue;
             }
 
             distance = distance + calculateDistanse(listOfLocations);
-            distance = num.parse(distance.toStringAsFixed(3));
+
+            distance = double.parse(distance.toStringAsFixed(3));
           } else {
-            //distance = 0;
             colorOfSpeed = Colors.red;
           }
         });
       });
 
-      streamSubscription.onDone(() => setState(() {
+      streamSubscription.onDone(() =>
+          setState(() {
             trackLocation = false;
           }));
+    }
+  }
+
+  stopLocations() {
+    if (trackLocation == true) {
+      streamSubscription.cancel();
+      trackLocation = false;
     }
   }
 
@@ -233,107 +189,271 @@ class HomeState extends State<Home> {
     });
   }
 
-  startTraining() {
-    locatron.startLocationStream();
+  double calculateCalories(int time, double distance, double speed) {
+    // spalone kilokalorie
+    // https://golf.procon.org/met-values-for-800-activities/
+    // Kcal ~= METS * bodyMassKg * timePerformingHours
 
-    _startTimer();
+    if (weight != null && speed != null && seconds != null) {
+      double mets = 1.6 * speed; // dla biegania
+
+      double kilocalories = mets * weight * (seconds / 3600)/1000;
+
+      // double kilocalories = speed * weight * totalTime;
+
+      return kilocalories;
+    } else {
+      return 0.0;
+    }
   }
 
-  pauseTraining() {
+  getNiceDistanceDisplay(double distance) {
+    if (distance != Null) {
+      if (metricDistanse) {
+        if (distance < 1000) {
+          return (distance).toStringAsFixed(1) + " m";
+        } else {
+          return (distance / 1000).toStringAsFixed(3) + " km";
+        }
+      } else {
+        return ((distance / 1000) * 0.621371192).toStringAsFixed(2) + " mi";
+      }
+    } else {
+      return "0.0";
+    }
+  }
+
+  getNiceSpeedDisplay(double speed) {
+    if (speed != null) {
+      if (metricSpeed) {
+        return ((speed * 3.6).toStringAsFixed(1)) + " km/h";
+      } else {
+        return ((speed * 3.6) * 0.621371192).toStringAsFixed(1) + " mi/h";
+      }
+    } else {
+      return "0.0";
+    }
+  }
+
+  String getNiceCaloriesDisplay(int seconds, double distance, double speed) {
+    calories = calories + calculateCalories(seconds, distance, speed);
+    return calories.toStringAsFixed(2) + " kcal";
+  }
+
+// METODY PRZYCISKOW
+
+  buttonPressed() {
+    getSharedPreferences();
+    if (isRunning == true) {
+      setState(() {
+        isRunning = false;
+        buttonText = "Start";
+        colorOfButton = Colors.green;
+        stopTraining();
+      });
+    } else {
+      setState(() {
+        isRunning = true;
+        buttonText = "Stop";
+        colorOfButton = Colors.red;
+      });
+      startTraining();
+    }
+  }
+
+  startTraining() {
+    _startTimer();
+    trackLocation = false;
+    startLocations();
+  }
+
+  stopTraining() {
+    getSharedPreferences();
     _stopTimer();
+    trackLocation = true;
+    stopLocations();
   }
 
   endTraining(context) {
-    //locatron.stopLocationStream();
+    stopTraining();
 
-    //_stopTimer();
+    endDate = DateTime.now();
 
-    //saveTraining();
+    var totalDistance = distance;
+    // var totalTime = double.parse(seconds.toString());
+    var totalTime = seconds;
+
+    // var trainingList = [
+    //   endDate.toString(),
+    //   totalTime.toString(),
+    //   totalDistance.toString(),
+    // ];
+
+    var avgSpeed = calculateAvgSpeed(listOfSpeed);
+
+    var avgPace = calculateAvgPace(totalTime, totalDistance);
+
+    // var kilocalories = 1000.0;
+    var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
+        avgSpeed, avgPace, calories); // srednia predkosc
+
+    // var trainingList = [
+    //   latitude.toString(),
+    //   longitude.toString(),
+    //   distance.toString(),
+    //   speed.toString(),
+    // ];
+
+// tutaj dodaj do bazy
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => (AfterTraining())),
+      // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+      MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
     );
   }
 
-  saveTraining() {}
+// METODY OBLICZENIOWE
+
+  double calculateAvgSpeed(List listOfSpeed) {
+    var avgSpeed;
+    var sumOfSpeed = 0.0;
+
+    if (listOfSpeed.isNotEmpty) {
+      for (var speed in listOfSpeed) {
+        sumOfSpeed = sumOfSpeed + speed;
+      }
+      avgSpeed = double.parse(
+          (sumOfSpeed * 3.6 / listOfSpeed.length).toStringAsFixed(2)); // w km/h
+    } else {
+      avgSpeed = 0.0;
+    }
+    return avgSpeed;
+  }
+
+  double calculateAvgPace(int totalTime, double totalDistance) {
+    if (totalTime > 0 && totalDistance > 0) {
+      var runningPace = double.parse(((totalTime / 60) / (totalDistance / 1000))
+          .toStringAsFixed(1)); // m/km
+
+      return runningPace;
+    } else {
+      return 0.0;
+    }
+  }
+
+// METODY TIMERA
+
+  String getNiceTimeDisplay(int seconds) {
+    int hours = (seconds / 3600).truncate();
+    seconds = (seconds % 3600).truncate();
+    int minutes = (seconds / 60).truncate();
+
+    String hoursStr = (hours).toString().padLeft(2, '0');
+    String minutesStr = (minutes).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    if (hours == 0) {
+      return "$minutesStr:$secondsStr";
+    }
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  static const oneSec = const Duration(seconds: 1);
+
+  int seconds = 0;
+  late Timer myTimer;
+
+  void _startTimer() {
+    myTimer = new Timer.periodic(oneSec, (timer) {
+      getSharedPreferences(); // sprawdzic
+      setState(() {
+        seconds = seconds + 1;
+
+        // calories = calories + calculateCalories(seconds, distance, speed);
+
+        // calories = calories + 10;
+      });
+    });
+  }
+
+  void _stopTimer() {
+    if (myTimer.isActive) {
+      myTimer.cancel();
+    }
+    setState(() {});
+  }
+
+// INTERFACE
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: Text('I am here'),
         actions: <Widget>[
-//          FlatButton(
-//            child: Text("Get Location"),
-//            onPressed: getLocations,
-//          )
+          IconButton(
+            icon: Icon(Icons.flag_outlined),
+            onPressed: () {
+              endTraining(context);
+            },
+          )
         ],
       ),
       body: Center(
           child: Container(
-        child: ListView(
-          children: [
-            Text(
-              "${latitude} , ${longitude}",
-              style: TextStyle(fontSize: 20),
+            alignment: Alignment.center,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+                Padding(padding: EdgeInsets.only(top: 10.0)),
+
+                // Text(
+                //   "w: $weight, h: $height",
+                //   style: TextStyle(fontSize: 20),
+                //   textAlign: TextAlign.center,
+                // ),
+                Text(
+                  getNiceTimeDisplay(seconds),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceDistanceDisplay(distance),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceSpeedDisplay(speed),
+                  style: TextStyle(fontSize: 50, color: colorOfSpeed),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceCaloriesDisplay(seconds, distance, speed),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+                TextButton(
+                  onPressed: buttonPressed,
+                  onLongPress: clearDistance,
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(fontSize: 50, color: colorOfButton),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    endTraining(context);
+                  },
+                  child: Text(
+                    "end training",
+                    style: TextStyle(fontSize: 50, color: Colors.black),
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "$distance m",
-              style: TextStyle(fontSize: 30),
-            ),
-            Text(
-              "$listSize",
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              "$speed m/s",
-              style: TextStyle(fontSize: 30, color: colorOfSpeed),
-            ),
-            Text(
-              "$_timer s",
-              style: TextStyle(fontSize: 30),
-            ),
-            Text(
-              "counter: ${globals.counter} ",
-              style: TextStyle(fontSize: 30),
-            ),
-            TextButton(
-              onPressed: _startTimer,
-              onLongPress: clearDistance,
-              child: Text(
-                "start timer",
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            TextButton(
-              onPressed: _stopTimer,
-              onLongPress: _resetTimer,
-              child: Text(
-                "stop timer",
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
-            TextButton(
-              onPressed: buttonOnPressed,
-              onLongPress: clearDistance,
-              child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 30, color: colorOfButton),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                endTraining(context);
-              },
-              child: Text(
-                "end training",
-                style: TextStyle(fontSize: 30, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }
