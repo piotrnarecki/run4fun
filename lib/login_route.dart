@@ -291,7 +291,8 @@ class _GuestBookState extends State<GuestBook> {
                         SizedBox(width: 4),
                         Text('WYŚLIJ DO BAZY DANYCH'),
                     ],
-                  ),
+                  )
+                  ,
                 ),
             ],
           ),

@@ -14,7 +14,9 @@ class TrainingSummary extends StatelessWidget {
   int totalTime = 0;
   double totalDistance = 0.0;
   var listOfLocations;
-  List<double> listOfSpeed = [];
+  var avgSpeed; // km/h
+  var avgPace; // min/km
+  var kilocalories; //kcal
 
   var metricDistanse;
   var metricSpeed;
@@ -23,12 +25,13 @@ class TrainingSummary extends StatelessWidget {
 
   void getTrainingData() {
     endDate = trainingModel.endDate;
-    totalTime = trainingModel.totalTime;
-    totalDistance = trainingModel.totalDistance;
-    // listOfLocations = trainingModel[3];
-    listOfSpeed = trainingModel.listOfSpeed;
+    totalTime = trainingModel.totalTime; // s
+    totalDistance = trainingModel.totalDistance; // m
 
-    //ladna data
+    avgSpeed = trainingModel.avgSpeed; // km/h
+    avgPace = trainingModel.avgPace; // min/km
+    kilocalories = trainingModel.kilocalories; //kcal
+
     getSharedPreferences();
   }
 
@@ -43,22 +46,18 @@ class TrainingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     getTrainingData();
-
 
     return Column(
       children: [
         // Text('Podsumowanie:', style: TextStyle(fontSize: 30)),
-        Text(getNiceTimeDisplay(totalTime), style: TextStyle(fontSize: 30)),
+        Text(getNiceTimeDisplay(totalTime), style: TextStyle(fontSize: 20)),
         Text(getNiceDistanceDisplay(totalDistance),
-            style: TextStyle(fontSize: 30)),
-        Text(getNiceSpeedDisplay(listOfSpeed), style: TextStyle(fontSize: 30)),
-        Text(getNicePaceDisplay(totalTime, totalDistance),
-            style: TextStyle(fontSize: 30)),
-        Text(getNiceCaloriesDisplay(totalTime,totalDistance), style: TextStyle(fontSize: 30)),
-
-        Text("$weight", style: TextStyle(fontSize: 30))
+            style: TextStyle(fontSize: 20)),
+        Text(getNiceSpeedDisplay(avgSpeed), style: TextStyle(fontSize: 20)),
+        Text(getNicePaceDisplay(avgPace), style: TextStyle(fontSize: 20)),
+        Text(getNiceCaloriesDisplay(kilocalories),
+            style: TextStyle(fontSize: 20)),
 
       ],
     );
@@ -67,51 +66,47 @@ class TrainingSummary extends StatelessWidget {
   String getNiceTimeDisplay(int totalTime) {
     // czas calkowity w min
     var time = (double.parse(totalTime.toString()) / 60).toStringAsFixed(2);
-    return time;
+    return "czas całkowity: " + time + " m";
   }
 
   String getNiceDistanceDisplay(double totalDistance) {
     // dystans calkowity w km
     var distance = double.parse((totalDistance / 1000).toStringAsFixed(3));
 
-    return distance.toString();
+    return "odległość:" + distance.toString() + " km";
   }
 
-  String getNiceSpeedDisplay(List<double> listOfSpeed) {
+  String getNiceSpeedDisplay(double avgSpeed) {
     // predkosc srednia
-    var sumOfSpeed = 0.0;
-    for (var speed in listOfSpeed) {
-      sumOfSpeed = sumOfSpeed + speed;
-    }
-    var avgSpeed = double.parse(
-        (sumOfSpeed * 3.6 / listOfSpeed.length).toStringAsFixed(2)); // w km/h
 
-    return avgSpeed.toString();
+    return "średnia prędkość: " + avgSpeed.toStringAsFixed(1) + " km/h";
+
+    // return "średnia prędkość: " + 69.toString() + " km/h";
   }
 
-  String getNicePaceDisplay(int totalTime, double totalDistance) {
+  String getNicePaceDisplay(double avgPace) {
     // tempo
-    var runningPace = double.parse(
-        ((totalTime / 60) / (totalDistance / 1000)).toStringAsFixed(1)); // m/km
 
-    return runningPace.toString();
+    return "tempo: " + avgPace.toStringAsFixed(2) + " m/km";
   }
 
-  String getNiceCaloriesDisplay(int totalTime,double totalDistance) {
+  String getNiceCaloriesDisplay(double kilocalories) {
+    // getSharedPreferences();
+    // // spalone kilokalorie
+    // // Kcal ~= METS * bodyMassKg * timePerformingHours
+    //
+    // if (weight != null && totalDistance > 0.0) {
+    //   var mets = 6.0; // dla biegania
+    //   double kilocalories = mets * weight * (totalTime / 3600);
+    //
+    //   return kilocalories.toStringAsFixed(2) + " kcal";
+    // } else {
+    //   return "0.0 kcal";
+    // }
 
-    getSharedPreferences();
-    // spalone kilokalorie
-    // Kcal ~= METS * bodyMassKg * timePerformingHours
+    return kilocalories.toStringAsFixed(2) + " kcal";
 
-
-
-    if(weight!=null && totalDistance>0.0){
-    var mets = 6.0; // dla biegania
-    double kilocalories = mets * weight * (totalTime / 3600);
-
-    return  kilocalories.toStringAsFixed(2)+" kcal";}else{
-      return "0.0 kcal";
-    }
+    // return "kcal";
   }
 
 //  @override

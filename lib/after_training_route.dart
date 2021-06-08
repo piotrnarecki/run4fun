@@ -29,15 +29,24 @@ class AfterTraining extends StatelessWidget {
 
   List<String> getTrainingData(TrainingModel trainingModel) {
     var endDate = trainingModel.endDate;
-    var totalTime = trainingModel.totalTime;
-    var totalDistance = trainingModel.totalDistance;
-    // listOfLocations = trainingModel[3];
-    var listOfSpeed = trainingModel.listOfSpeed;
+    var totalTime = trainingModel.totalTime; //s
+    var totalDistance = trainingModel.totalDistance; //m
+
+    var avgSpeed=trainingModel.avgSpeed;  // km/h
+    var avgPace=trainingModel.avgPace;// min/km
+    var kilocalories=trainingModel.kilocalories; //kcal
+
+
+
 
     List<String> trainingList = [
       endDate.toString(),
       totalTime.toString(),
-      totalDistance.toString()
+      totalDistance.toString(),
+      avgSpeed.toString(),
+      avgPace.toString(),
+      kilocalories.toString(),
+
     ];
 
     return trainingList;
@@ -78,11 +87,14 @@ class AfterTraining extends StatelessWidget {
                     );
                   },
                 ),
-                /***
-                    ElevatedButton(
-                    child: Text('Send training to database'),
-                    onPressed: () {
-                 */
+
+                Text("tutaj wszystkie treningi jednego uzytkowniak"),
+
+                // /***
+                //     ElevatedButton(
+                //     child: Text('Send training to database'),
+                //     onPressed: () {
+                //  */
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,6 +115,9 @@ class AfterTraining extends StatelessWidget {
                     }
                     ),
                  */
+                
+
+                
               ]),
             )));
   }

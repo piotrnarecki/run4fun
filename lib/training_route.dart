@@ -141,7 +141,8 @@ class TrainingViewState extends State<TrainingView> {
         });
       });
 
-      streamSubscription.onDone(() => setState(() {
+      streamSubscription.onDone(() =>
+          setState(() {
             trackLocation = false;
           }));
     }
@@ -286,12 +287,15 @@ class TrainingViewState extends State<TrainingView> {
     //   endDate.toString(),
     //   totalTime.toString(),
     //   totalDistance.toString(),
-    //   listOfLocations,
-    //   listOfSpeed
     // ];
 
-    var trainingModel =
-        TrainingModel(totalDistance, totalTime, endDate, listOfSpeed);
+    var avgSpeed = calculateAvgSpeed(listOfSpeed);
+
+    var avgPace = calculateAvgPace(totalTime, totalDistance);
+
+    var kilocalories = 1000.0;
+    var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
+        avgSpeed, avgPace, kilocalories); // srednia predkosc
 
     // var trainingList = [
     //   latitude.toString(),
@@ -307,6 +311,35 @@ class TrainingViewState extends State<TrainingView> {
       // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
       MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
     );
+  }
+
+// METODY OBLICZENIOWE
+
+  double calculateAvgSpeed(List listOfSpeed) {
+    var avgSpeed;
+    var sumOfSpeed = 0.0;
+
+    if (listOfSpeed.isNotEmpty) {
+      for (var speed in listOfSpeed) {
+        sumOfSpeed = sumOfSpeed + speed;
+      }
+      avgSpeed = double.parse(
+          (sumOfSpeed * 3.6 / listOfSpeed.length).toStringAsFixed(2)); // w km/h
+    } else {
+      avgSpeed = 0.0;
+    }
+    return avgSpeed;
+  }
+
+  double calculateAvgPace(int totalTime, double totalDistance) {
+    if (totalTime > 0 && totalDistance > 0) {
+      var runningPace = double.parse(((totalTime / 60) / (totalDistance / 1000))
+          .toStringAsFixed(1)); // m/km
+
+      return runningPace;
+    } else {
+      return 0.0;
+    }
   }
 
 // METODY TIMERA
@@ -369,58 +402,58 @@ class TrainingViewState extends State<TrainingView> {
       ),
       body: Center(
           child: Container(
-        alignment: Alignment.center,
-        child: ListView(
-          // mainAxisAlignment: MainAxisAlignment.center,
+            alignment: Alignment.center,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.center,
 
-          children: [
-            Padding(padding: EdgeInsets.only(top:10.0)),
+              children: [
+                Padding(padding: EdgeInsets.only(top: 10.0)),
 
-            Text(
-              "w: $weight, h: $height",
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
+                Text(
+                  "w: $weight, h: $height",
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceTimeDisplay(seconds),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceDistanceDisplay(distance),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  getNiceSpeedDisplay(speed),
+                  style: TextStyle(fontSize: 50, color: colorOfSpeed),
+                  textAlign: TextAlign.center,
+                ),
+                // Text(
+                //   getNiceCaloriesDisplay(seconds, distance, speed),
+                //   style: TextStyle(fontSize: 50),
+                //   textAlign: TextAlign.center,
+                // ),
+                TextButton(
+                  onPressed: buttonPressed,
+                  onLongPress: clearDistance,
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(fontSize: 50, color: colorOfButton),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    endTraining(context);
+                  },
+                  child: Text(
+                    "end training",
+                    style: TextStyle(fontSize: 50, color: Colors.black),
+                  ),
+                ),
+              ],
             ),
-            Text(
-              getNiceTimeDisplay(seconds),
-              style: TextStyle(fontSize: 50),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              getNiceDistanceDisplay(distance),
-              style: TextStyle(fontSize: 50),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              getNiceSpeedDisplay(speed),
-              style: TextStyle(fontSize: 50, color: colorOfSpeed),
-              textAlign: TextAlign.center,
-            ),
-            // Text(
-            //   getNiceCaloriesDisplay(seconds, distance, speed),
-            //   style: TextStyle(fontSize: 50),
-            //   textAlign: TextAlign.center,
-            // ),
-            TextButton(
-              onPressed: buttonPressed,
-              onLongPress: clearDistance,
-              child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 50, color: colorOfButton),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                endTraining(context);
-              },
-              child: Text(
-                "end training",
-                style: TextStyle(fontSize: 50, color: Colors.black),
-              ),
-            ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }
