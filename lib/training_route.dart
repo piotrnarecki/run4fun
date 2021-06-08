@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'after_training_route.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'dart:core';
-import 'training.dart';
-
+import 'trainingModel.dart';
 // W TEJ KLASIE BEDZIE TRENING
 
 class TrainingRoute extends StatelessWidget {
@@ -28,7 +28,7 @@ class TrainingViewState extends State<TrainingView> {
   var endDate;
 
   var totalDistance;
-  var _totalTime;
+  var totalTime;
 
   var isRunning;
 
@@ -46,11 +46,9 @@ class TrainingViewState extends State<TrainingView> {
   var distance = 0.0;
   var speed;
 
-  var heading;
-
   var listOfLocations = [];
   var listSize = 0;
-  var listOfSpeed = [];
+  List<double> listOfSpeed = [];
 
   var colorOfSpeed = Colors.black;
   var colorOfButton = Colors.black;
@@ -68,6 +66,7 @@ class TrainingViewState extends State<TrainingView> {
     positions = null;
 
     isRunning = false;
+    // speed=0.0;
 
     buttonText = "Start";
   }
@@ -109,7 +108,6 @@ class TrainingViewState extends State<TrainingView> {
             distance = distance + calculateDistanse(listOfLocations);
             distance = double.parse(distance.toStringAsFixed(3));
           } else {
-            //distance = 0;
             colorOfSpeed = Colors.red;
           }
         });
@@ -162,9 +160,21 @@ class TrainingViewState extends State<TrainingView> {
     });
   }
 
-  //
+  getNiceDistanceDisplay(double distance) {
+    if (distance != Null) {
+      return distance.toString();
+    } else {
+      return "0.0";
+    }
+  }
 
-  //TimerView timerView;
+  getNiceSpeedDisplay(double speed) {
+    if (distance != Null) {
+      return speed.toString();
+    } else {
+      return "0.0";
+    }
+  }
 
   // METODY PRZYCISKOW
 
@@ -204,14 +214,8 @@ class TrainingViewState extends State<TrainingView> {
     endDate = DateTime.now();
 
     var totalDistance = distance;
-    var totalTime = double.parse(_seconds.toString());
-
-//    var myTraining = Training(totalDistance, totalTime, endDate);
-//
-//    setState(() {
-//      totalDistance = totalDistance;
-//
-//    });
+    // var totalTime = double.parse(seconds.toString());
+    var totalTime = seconds;
 
     var trainingList = [
       endDate.toString(),
@@ -220,6 +224,9 @@ class TrainingViewState extends State<TrainingView> {
       listOfLocations,
       listOfSpeed
     ];
+
+    var trainingModel =
+        TrainingModel(totalDistance, totalTime, endDate, listOfSpeed);
 
 //    var trainingList = [
 //      latitude.toString(),
@@ -233,51 +240,38 @@ class TrainingViewState extends State<TrainingView> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+      // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+      MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
     );
   }
 
   // METODY TIMERA
 
-  int _seconds = 0;
-  int _minutes = 0;
-  int _hours = 0;
+  String getNiceTimeDisplay(int seconds) {
+    int hours = (seconds / 3600).truncate();
+    seconds = (seconds % 3600).truncate();
+    int minutes = (seconds / 60).truncate();
 
-  var _timeDisplay;
+    String hoursStr = (hours).toString().padLeft(2, '0');
+    String minutesStr = (minutes).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    if (hours == 0) {
+      return "$minutesStr:$secondsStr";
+    }
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
   static const oneSec = const Duration(seconds: 1);
 
+  int seconds = 0;
   late Timer myTimer;
 
   void _startTimer() {
     myTimer = new Timer.periodic(oneSec, (timer) {
-      _seconds = _seconds + 1;
-      _totalTime = _totalTime + 1;
       setState(() {
-        if (_seconds == 61) {
-          _minutes = _minutes + 1;
-          _seconds = 0;
-        }
-
-        if (_minutes == 61) {
-          _hours = _hours + 1;
-          _minutes = 0;
-        }
-
-        var secondsDisplay = "$_seconds";
-        var minutesDisplay = "$_minutes";
-        var hoursDisplay = "$_hours";
-
-        if (_seconds < 10) {
-          secondsDisplay = "0" + secondsDisplay;
-        }
-        if (_minutes < 10) {
-          minutesDisplay = "0" + minutesDisplay;
-        }
-        if (_hours < 10) {
-          hoursDisplay = "0" + hoursDisplay;
-        }
-
-        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
+        seconds = seconds + 1;
       });
     });
   }
@@ -304,36 +298,28 @@ class TrainingViewState extends State<TrainingView> {
           ),
       body: Center(
           child: Container(
-        child: ListView(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-//
-            //TimerView(),
             Text(
-              "${latitude} , ${longitude}",
-              style: TextStyle(fontSize: 20),
+              getNiceTimeDisplay(seconds),
+              style: TextStyle(fontSize: 50),
             ),
             Text(
-              "$_seconds s",
-              style: TextStyle(fontSize: 20),
+              getNiceDistanceDisplay(distance),
+              style: TextStyle(fontSize: 50),
             ),
             Text(
-              "$distance m",
-              style: TextStyle(fontSize: 30),
-            ),
-            Text(
-              "locations: $listSize",
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              "$speed m/s",
-              style: TextStyle(fontSize: 30, color: colorOfSpeed),
+              getNiceSpeedDisplay(speed),
+              style: TextStyle(fontSize: 50, color: colorOfSpeed),
             ),
             TextButton(
               onPressed: buttonPressed,
               onLongPress: clearDistance,
               child: Text(
                 buttonText,
-                style: TextStyle(fontSize: 30, color: colorOfButton),
+                style: TextStyle(fontSize: 50, color: colorOfButton),
               ),
             ),
             TextButton(
@@ -342,14 +328,8 @@ class TrainingViewState extends State<TrainingView> {
               },
               child: Text(
                 "end training",
-                style: TextStyle(fontSize: 30, color: Colors.black),
+                style: TextStyle(fontSize: 50, color: Colors.black),
               ),
-            ),
-            Text(
-              "total distance: $totalDistance",
-            ),
-            Text(
-              "total time: $_totalTime",
             ),
           ],
         ),
@@ -357,82 +337,3 @@ class TrainingViewState extends State<TrainingView> {
     );
   }
 }
-
-//class TimerView extends StatefulWidget {
-//  @override
-//  TimerViewState createState() => TimerViewState();
-//}
-//
-//class TimerViewState extends State<TimerView> {
-//  int _seconds = 0;
-//  int _minutes = 0;
-//  int _hours = 0;
-//
-//  var _timeDisplay;
-//  static const oneSec = const Duration(seconds: 1);
-//
-//  late Timer myTimer;
-//
-//  void _startTimer() {
-//    myTimer = new Timer.periodic(oneSec, (timer) {
-//      _seconds = _seconds + 1;
-//
-//      setState(() {
-//        if (_seconds == 61) {
-//          _minutes = _minutes + 1;
-//          _seconds = 0;
-//        }
-//
-//        if (_minutes == 61) {
-//          _hours = _hours + 1;
-//          _minutes = 0;
-//        }
-//
-//        var secondsDisplay = "$_seconds";
-//        var minutesDisplay = "$_minutes";
-//        var hoursDisplay = "$_hours";
-//
-//        if (_seconds < 10) {
-//          secondsDisplay = "0" + secondsDisplay;
-//        }
-//        if (_minutes < 10) {
-//          minutesDisplay = "0" + minutesDisplay;
-//        }
-//        if (_hours < 10) {
-//          hoursDisplay = "0" + hoursDisplay;
-//        }
-//
-//        _timeDisplay = "$hoursDisplay:$minutesDisplay:$secondsDisplay";
-//      });
-//    });
-//  }
-//
-//  void _stopTimer() {
-//    if (myTimer.isActive) {
-//      myTimer.cancel();
-//    }
-//    setState(() {});
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Center(
-//        child: Container(
-//      child: ListView(
-//        children: [
-////
-//
-//          Text(
-//            "$_seconds ",
-//            style: TextStyle(fontSize: 20),
-//          ),
-//
-//          Text(
-//            "time display: ${_timeDisplay} ",
-//            style: TextStyle(fontSize: 20),
-//          ),
-//        ],
-//      ),
-//    ));
-//  }
-//}

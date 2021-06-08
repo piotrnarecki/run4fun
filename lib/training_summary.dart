@@ -1,67 +1,77 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
+import 'trainingModel.dart';
 
 class TrainingSummary extends StatelessWidget {
 //  var
 
-  TrainingSummary(this.yourData);
+  TrainingSummary(this.trainingModel);
 
-  final List<Object> yourData;
+  final TrainingModel trainingModel;
 
   var endDate;
-  var totalTime;
-  var totalDistance;
+  int totalTime =0;
+  double totalDistance = 0.0;
   var listOfLocations;
-  var listOfSpeed;
-  var avgSpeed;
-  var runningPace;
-
-  void createTrainingSummary() {
-    endDate = yourData[0].toString();
-    totalTime = double.parse(yourData[1].toString());
-    totalDistance = double.parse(yourData[2].toString());
-    listOfLocations = yourData[3];
-    listOfSpeed = yourData[4];
+  List<double> listOfSpeed=[];
 
 
+  void getTrainingData() {
+    endDate = trainingModel.endDate;
+    totalTime = trainingModel.totalTime;
+    totalDistance = trainingModel.totalDistance;
+    // listOfLocations = trainingModel[3];
+    listOfSpeed = trainingModel.listOfSpeed;
 
+    //ladna data
+  }
 
-    // tempo
-    runningPace = double.parse(
-        ((totalTime / 60) / (totalDistance / 1000)).toStringAsFixed(1)); // m/km
+  @override
+  Widget build(BuildContext context) {
+    getTrainingData();
 
+    return Column(
+      children: [
+        Text('Podsumowanie treningu :'),
+        Text(getNiceTimeDisplay(totalTime)),
+        Text(getNiceDistanceDisplay(totalDistance)),
+        Text(getNiceSpeedDisplay(listOfSpeed)),
+        Text(getNicePaceDisplay(totalTime, totalDistance))
+      ],
+    );
+  }
+
+  String getNiceTimeDisplay(int totalTime) {
+    // czas calkowity w min
+    var time = (double.parse(totalTime.toString())/60).toStringAsFixed(2);
+    return time;
+  }
+
+  String getNiceDistanceDisplay(double totalDistance) {
+    // dystans calkowity w km
+    var distance = double.parse((totalDistance / 1000).toStringAsFixed(3));
+
+    return distance.toString();
+  }
+
+  String getNiceSpeedDisplay(List<double> listOfSpeed) {
     // predkosc srednia
     var sumOfSpeed = 0.0;
     for (var speed in listOfSpeed) {
       sumOfSpeed = sumOfSpeed + speed;
     }
-    avgSpeed = double.parse(
+    var avgSpeed = double.parse(
         (sumOfSpeed * 3.6 / listOfSpeed.length).toStringAsFixed(2)); // w km/h
 
-    // dystans calkowity w km
-    totalDistance=double.parse((totalDistance/1000).toStringAsFixed(3));
-
-    // czas calkowity w min
-    totalTime=double.parse((totalTime/60).toStringAsFixed(2));
-
-    //ladna data
-
+    return avgSpeed.toString();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    createTrainingSummary();
+  String getNicePaceDisplay(int totalTime, double totalDistance) {
+    // tempo
+    var runningPace = double.parse(
+        ((totalTime / 60) / (totalDistance / 1000)).toStringAsFixed(1)); // m/km
 
-    return Column(
-      children: [
-        Text('Podsumowanie treningu :'),
-        // Text('${yourData[0]}'),
-        Text('czas: ${totalTime} m'),
-        Text('dystans: ${totalDistance} km'),
-        Text('średnia prędkość: ${avgSpeed} km/h'),
-        Text('tempo: ${runningPace} min/km')
-      ],
-    );
+    return runningPace.toString();
   }
 
 //  @override

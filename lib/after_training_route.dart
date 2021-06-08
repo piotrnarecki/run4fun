@@ -6,14 +6,19 @@ import 'login_route.dart';
 
 import 'dart:core';
 import 'training_summary.dart';
+import 'trainingModel.dart';
 
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
-  AfterTraining(List<Object> trainingList) : this.trainingList = trainingList;
-  final List<Object> trainingList;
+  // AfterTraining(List<Object> trainingList) : this.trainingList = trainingList;
+  // final List<Object> trainingList;
+
+  AfterTraining(TrainingModel trainingModel) : this.trainingModel = trainingModel;
+  final TrainingModel trainingModel;
+
   //final List<String> trainingListString=[trainingList[0],trainingList[1],trainingList[2]];
 
 
@@ -37,7 +42,7 @@ class AfterTraining extends StatelessWidget {
             ),
             body: Center(
               child: ListView(children: [
-                TrainingSummary(trainingList),
+                TrainingSummary(trainingModel),
 
                 // ElevatedButton(
                 //   child: Text('see last training details'),
