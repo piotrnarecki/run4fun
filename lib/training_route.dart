@@ -5,6 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'dart:core';
 import 'trainingModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'settings_route.dart';
 // W TEJ KLASIE BEDZIE TRENING
 
 class TrainingRoute extends StatelessWidget {
@@ -25,6 +27,17 @@ class TrainingView extends StatefulWidget {
 }
 
 class TrainingViewState extends State<TrainingView> {
+  bool metricDistanse = true;
+
+  //var distanceUnits = "km";
+
+  bool metricSpeed = true;
+
+  //var speedUnits = "km/h";
+
+  var height;
+  var weight;
+
   var endDate;
 
   var totalDistance;
@@ -62,6 +75,8 @@ class TrainingViewState extends State<TrainingView> {
     super.initState();
     checkGps();
 
+    getSharedPreferences();
+
     trackLocation = false;
     positions = null;
 
@@ -69,6 +84,15 @@ class TrainingViewState extends State<TrainingView> {
     // speed=0.0;
 
     buttonText = "Start";
+  }
+
+  Future<void> getSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    metricDistanse = prefs.getBool('distance_settings') ?? true;
+    metricSpeed = prefs.getBool('speed_settings') ?? true;
+    height = prefs.getDouble('height') ?? 175;
+    weight = prefs.getDouble('weight') ?? 70;
   }
 
   // METODY LOKALIZACJI
@@ -162,23 +186,36 @@ class TrainingViewState extends State<TrainingView> {
 
   getNiceDistanceDisplay(double distance) {
     if (distance != Null) {
-      return distance.toString();
+      if (metricDistanse) {
+        if (distance < 1000) {
+          return (distance).toStringAsFixed(1) + " m";
+        } else {
+          return (distance / 1000).toStringAsFixed(3) + " km";
+        }
+      } else {
+        return ((distance / 1000) * 0.621371192).toStringAsFixed(2) + " mi";
+      }
     } else {
       return "0.0";
     }
   }
 
   getNiceSpeedDisplay(double speed) {
-    if (distance != Null) {
-      return speed.toString();
+    if (speed != null) {
+      if (metricSpeed) {
+        return ((speed * 3.6).toStringAsFixed(1)) + " km/h";
+      } else {
+        return ((speed * 3.6) * 0.621371192).toStringAsFixed(1) + " mi/h";
+      }
     } else {
       return "0.0";
     }
   }
 
-  // METODY PRZYCISKOW
+// METODY PRZYCISKOW
 
   buttonPressed() {
+    getSharedPreferences();
     if (isRunning == true) {
       setState(() {
         isRunning = false;
@@ -203,6 +240,7 @@ class TrainingViewState extends State<TrainingView> {
   }
 
   stopTraining() {
+    getSharedPreferences();
     _stopTimer();
     trackLocation = true;
     stopLocations();
@@ -228,23 +266,23 @@ class TrainingViewState extends State<TrainingView> {
     var trainingModel =
         TrainingModel(totalDistance, totalTime, endDate, listOfSpeed);
 
-   // var trainingList = [
-   //   latitude.toString(),
-   //   longitude.toString(),
-   //   distance.toString(),
-   //   speed.toString(),
-   // ];
+    // var trainingList = [
+    //   latitude.toString(),
+    //   longitude.toString(),
+    //   distance.toString(),
+    //   speed.toString(),
+    // ];
 
 // tutaj dodaj do bazy
 
     Navigator.push(
       context,
-       // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+      // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
       MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
     );
   }
 
-  // METODY TIMERA
+// METODY TIMERA
 
   String getNiceTimeDisplay(int seconds) {
     int hours = (seconds / 3600).truncate();
@@ -269,6 +307,7 @@ class TrainingViewState extends State<TrainingView> {
 
   void _startTimer() {
     myTimer = new Timer.periodic(oneSec, (timer) {
+      getSharedPreferences(); // sprawdzic
       setState(() {
         seconds = seconds + 1;
       });
@@ -282,19 +321,21 @@ class TrainingViewState extends State<TrainingView> {
     setState(() {});
   }
 
-  // INTERFACE
+// INTERFACE
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-//        actions: <Widget>[
-////          FlatButton(
-////            child: Text("Get Location"),
-////            onPressed: getLocations,
-////          )
-//        ],
-          ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.flag_outlined),
+            onPressed: () {
+              endTraining(context);
+            },
+          )
+        ],
+      ),
       body: Center(
           child: Container(
         alignment: Alignment.center,
@@ -302,6 +343,13 @@ class TrainingViewState extends State<TrainingView> {
           // mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
+            Text(
+              "w: $weight, h: $height",
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+
+
 
             Text(
               getNiceTimeDisplay(seconds),

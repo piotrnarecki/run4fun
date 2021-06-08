@@ -53,7 +53,7 @@ class AfterTraining extends StatelessWidget {
         theme: ThemeData.light(),
         home: Scaffold(
             appBar: AppBar(
-              title: Text('After training route'),
+              title: Text('Podsumowanie'),
             ),
             body: Center(
               child: ListView(children: [

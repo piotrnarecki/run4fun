@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:core';
 import 'dart:async';
 
-
 // W TEJ KLASIE BEDZA USTAWIANE TAKIE PARAMETRY UZYTKOWNIKA JAK MASA CZY WZROST (MASA POTRZEBNA DO WYLICZNENIA SPALONYCH KALORI)
 
 class SettingsRoute extends StatefulWidget {
@@ -15,10 +14,12 @@ class SettingsRoute extends StatefulWidget {
 
 class SettingsState extends State<SettingsRoute> {
   bool metricDistanse = true;
-  var distanceUnits = "km";
+
+  var distanceUnits = " km";
 
   bool metricSpeed = true;
-  var speedUnits = "km/h";
+
+  var speedUnits = " km/h";
 
   // bool metricWeight = true;
   // var weightUnits = "kg";
@@ -26,8 +27,10 @@ class SettingsState extends State<SettingsRoute> {
   // bool metricHeight = true;
   // var heightUnits = "m, cm";
 
-  double weightSliderValue = 70;
+
   double heightSliderValue = 175;
+  double weightSliderValue = 70;
+
 
   // var minWeight;
   // var maxWeight;
@@ -83,18 +86,30 @@ class SettingsState extends State<SettingsRoute> {
   //   });
   // }
 
-  Future<void> saveSettings(bool metricDistanse, bool metricSpeed, double height, double weight) async {
-
-
+  Future<void> getSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
+    metricDistanse = prefs.getBool('distance_settings') ?? false;
+    metricSpeed = prefs.getBool('speed_settings') ?? false;
+    heightSliderValue = prefs.getDouble('height') ?? 175;
+    weightSliderValue = prefs.getDouble('weight') ?? 70;
+  }
 
-    
+  Future<void> saveSettings(bool metricDistanse, bool metricSpeed,
+      double height, double weight) async {
+    final prefs = await SharedPreferences.getInstance();
 
+// write
+    prefs.setBool('speed_settings', metricSpeed);
+    prefs.setBool('distance_settings', metricDistanse);
+    prefs.setDouble('height', height);
+    prefs.setDouble('weight', weight);
   }
 
   @override
   Widget build(BuildContext context) {
+    getSharedPreferences();
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Ustawienia'),
@@ -110,6 +125,8 @@ class SettingsState extends State<SettingsRoute> {
                   setState(() {
                     metricDistanse = value;
                     changeDistanceSettings(metricDistanse);
+                    saveSettings(metricDistanse, metricSpeed, heightSliderValue,
+                        weightSliderValue);
                   });
                 },
                 secondary: const Icon(Icons.add_road),
@@ -122,6 +139,8 @@ class SettingsState extends State<SettingsRoute> {
                   setState(() {
                     metricSpeed = value;
                     changeSpeedSettings(metricSpeed);
+                    saveSettings(metricDistanse, metricSpeed, heightSliderValue,
+                        weightSliderValue);
                   });
                 },
                 secondary: const Icon(Icons.speed),
@@ -161,13 +180,15 @@ class SettingsState extends State<SettingsRoute> {
                       child: Slider(
                         // wzrost
                         value: heightSliderValue,
-                        min: 110,
-                        max: 230,
+                        min: 110.0,
+                        max: 230.0,
                         divisions: 120,
                         label: heightSliderValue.round().toString(),
                         onChanged: (double value) {
                           setState(() {
                             heightSliderValue = value;
+                            saveSettings(metricDistanse, metricSpeed,
+                                heightSliderValue, weightSliderValue);
                           });
                         },
                       )),
@@ -184,16 +205,19 @@ class SettingsState extends State<SettingsRoute> {
                         // masa w kg
 
                         value: weightSliderValue,
-                        min: 30,
-                        max: 180,
+                        min: 30.0,
+                        max: 180.0,
                         divisions: 150,
                         label: weightSliderValue.round().toString(),
                         onChanged: (double value) {
                           setState(() {
                             weightSliderValue = value;
+                            saveSettings(metricDistanse, metricSpeed,
+                                heightSliderValue, weightSliderValue);
                           });
                         },
-                      ))
+                      )
+                  )
                 ],
               ),
             ],

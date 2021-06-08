@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'trainingModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TrainingSummary extends StatelessWidget {
 //  var
@@ -10,11 +11,15 @@ class TrainingSummary extends StatelessWidget {
   final TrainingModel trainingModel;
 
   var endDate;
-  int totalTime =0;
+  int totalTime = 0;
   double totalDistance = 0.0;
   var listOfLocations;
-  List<double> listOfSpeed=[];
+  List<double> listOfSpeed = [];
 
+  var metricDistanse;
+  var metricSpeed;
+  var weight;
+  var height;
 
   void getTrainingData() {
     endDate = trainingModel.endDate;
@@ -24,26 +29,44 @@ class TrainingSummary extends StatelessWidget {
     listOfSpeed = trainingModel.listOfSpeed;
 
     //ladna data
+    getSharedPreferences();
+  }
+
+  Future<void> getSharedPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    metricDistanse = prefs.getBool('distance_settings') ?? false;
+    metricSpeed = prefs.getBool('speed_settings') ?? false;
+    height = prefs.getDouble('height') ?? 175;
+    weight = prefs.getDouble('weight') ?? 70;
   }
 
   @override
   Widget build(BuildContext context) {
+
     getTrainingData();
+
 
     return Column(
       children: [
-        Text('Podsumowanie:',style: TextStyle(fontSize: 30)),
-        Text(getNiceTimeDisplay(totalTime),style: TextStyle(fontSize: 30)),
-        Text(getNiceDistanceDisplay(totalDistance),style: TextStyle(fontSize: 30)),
-        Text(getNiceSpeedDisplay(listOfSpeed),style: TextStyle(fontSize: 30)),
-        Text(getNicePaceDisplay(totalTime, totalDistance),style: TextStyle(fontSize: 30))
+        // Text('Podsumowanie:', style: TextStyle(fontSize: 30)),
+        Text(getNiceTimeDisplay(totalTime), style: TextStyle(fontSize: 30)),
+        Text(getNiceDistanceDisplay(totalDistance),
+            style: TextStyle(fontSize: 30)),
+        Text(getNiceSpeedDisplay(listOfSpeed), style: TextStyle(fontSize: 30)),
+        Text(getNicePaceDisplay(totalTime, totalDistance),
+            style: TextStyle(fontSize: 30)),
+        Text(getNiceCaloriesDisplay(totalTime,totalDistance), style: TextStyle(fontSize: 30)),
+
+        Text("$weight", style: TextStyle(fontSize: 30))
+
       ],
     );
   }
 
   String getNiceTimeDisplay(int totalTime) {
     // czas calkowity w min
-    var time = (double.parse(totalTime.toString())/60).toStringAsFixed(2);
+    var time = (double.parse(totalTime.toString()) / 60).toStringAsFixed(2);
     return time;
   }
 
@@ -72,6 +95,23 @@ class TrainingSummary extends StatelessWidget {
         ((totalTime / 60) / (totalDistance / 1000)).toStringAsFixed(1)); // m/km
 
     return runningPace.toString();
+  }
+
+  String getNiceCaloriesDisplay(int totalTime,double totalDistance) {
+
+    getSharedPreferences();
+    // spalone kilokalorie
+    // Kcal ~= METS * bodyMassKg * timePerformingHours
+
+    
+
+    if(weight!=null && totalDistance>0.0){
+    var mets = 6.0; // dla biegania
+    double kilocalories = mets * weight * (totalTime / 3600);
+
+    return  kilocalories.toStringAsFixed(2)+" kcal";}else{
+      return "0.0 kcal";
+    }
   }
 
 //  @override
