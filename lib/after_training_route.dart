@@ -13,16 +13,13 @@ import 'trainingModel.dart';
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
-  // AfterTraining(List<Object> trainingList) : this.trainingList = trainingList;
-  // final List<Object> trainingList;
+  // AfterTraining(List<String> trainingList) : this.trainingList = trainingList;
+  // final List<String> trainingList;
 
   AfterTraining(TrainingModel trainingModel) : this.trainingModel = trainingModel;
   final TrainingModel trainingModel;
 
-  //final List<String> trainingListString=[trainingList[0],trainingList[1],trainingList[2]];
-
-
-
+  List<String> trainingList = [];
 
   void sendTrainingToDatabase() {
     // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
@@ -30,8 +27,26 @@ class AfterTraining extends StatelessWidget {
     // tutaj ma wysyłać trening do bazy danych trening
   }
 
+  List<String> getTrainingData(TrainingModel trainingModel) {
+    var endDate = trainingModel.endDate;
+    var totalTime = trainingModel.totalTime;
+    var totalDistance = trainingModel.totalDistance;
+    // listOfLocations = trainingModel[3];
+    var listOfSpeed = trainingModel.listOfSpeed;
+
+    List<String> trainingList = [
+      endDate.toString(),
+      totalTime.toString(),
+      totalDistance.toString()
+    ];
+
+    return trainingList;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // trainingList=
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Location Example',
@@ -76,9 +91,9 @@ class AfterTraining extends StatelessWidget {
                         addMessage: (String message) =>
                             appState.addMessageToGuestBook(message),
                         messages: appState.guestBookMessages,
-                        //trainingList: trainingList,
-                        trainingList: ["trening","data","dystans"],
-
+                        // trainingList: trainingList,
+                        // trainingList: ["trening","data","dystans"],
+                        trainingList: getTrainingData(trainingModel),
                       ),
                     ],
                   ),

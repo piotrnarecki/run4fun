@@ -217,30 +217,29 @@ class TrainingViewState extends State<TrainingView> {
     // var totalTime = double.parse(seconds.toString());
     var totalTime = seconds;
 
-    var trainingList = [
-      endDate.toString(),
-      totalTime.toString(),
-      totalDistance.toString(),
-      listOfLocations,
-      listOfSpeed
-    ];
+    // var trainingList = [
+    //   endDate.toString(),
+    //   totalTime.toString(),
+    //   totalDistance.toString(),
+    //   listOfLocations,
+    //   listOfSpeed
+    // ];
 
     var trainingModel =
         TrainingModel(totalDistance, totalTime, endDate, listOfSpeed);
 
-//    var trainingList = [
-//      latitude.toString(),
-//      longitude.toString(),
-//      distance.toString(),
-//      speed.toString(),
-//      heading.toString()
-//    ];
+   // var trainingList = [
+   //   latitude.toString(),
+   //   longitude.toString(),
+   //   distance.toString(),
+   //   speed.toString(),
+   // ];
 
 // tutaj dodaj do bazy
 
     Navigator.push(
       context,
-      // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+       // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
       MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
     );
   }
@@ -299,20 +298,25 @@ class TrainingViewState extends State<TrainingView> {
       body: Center(
           child: Container(
         alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          // mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
+
             Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
             ),
             Text(
               getNiceDistanceDisplay(distance),
               style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
             ),
             Text(
               getNiceSpeedDisplay(speed),
               style: TextStyle(fontSize: 50, color: colorOfSpeed),
+              textAlign: TextAlign.center,
             ),
             TextButton(
               onPressed: buttonPressed,

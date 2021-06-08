@@ -32,11 +32,11 @@ class TrainingSummary extends StatelessWidget {
 
     return Column(
       children: [
-        Text('Podsumowanie treningu :'),
-        Text(getNiceTimeDisplay(totalTime)),
-        Text(getNiceDistanceDisplay(totalDistance)),
-        Text(getNiceSpeedDisplay(listOfSpeed)),
-        Text(getNicePaceDisplay(totalTime, totalDistance))
+        Text('Podsumowanie:',style: TextStyle(fontSize: 30)),
+        Text(getNiceTimeDisplay(totalTime),style: TextStyle(fontSize: 30)),
+        Text(getNiceDistanceDisplay(totalDistance),style: TextStyle(fontSize: 30)),
+        Text(getNiceSpeedDisplay(listOfSpeed),style: TextStyle(fontSize: 30)),
+        Text(getNicePaceDisplay(totalTime, totalDistance),style: TextStyle(fontSize: 30))
       ],
     );
   }

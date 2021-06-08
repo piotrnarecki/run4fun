@@ -50,6 +50,8 @@ dependencies:
 #  http_parser:
 #  http:
 
+#shared_preferences: '>=0.5.12+4 <2.0.0'
+  shared_preferences: 2.0.6
 
 
 
