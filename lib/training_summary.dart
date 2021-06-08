@@ -58,7 +58,6 @@ class TrainingSummary extends StatelessWidget {
         Text(getNicePaceDisplay(avgPace), style: TextStyle(fontSize: 20)),
         Text(getNiceCaloriesDisplay(kilocalories),
             style: TextStyle(fontSize: 20)),
-
       ],
     );
   }
@@ -81,7 +80,6 @@ class TrainingSummary extends StatelessWidget {
 
     return "średnia prędkość: " + avgSpeed.toStringAsFixed(1) + " km/h";
 
-    // return "średnia prędkość: " + 69.toString() + " km/h";
   }
 
   String getNicePaceDisplay(double avgPace) {
@@ -91,20 +89,7 @@ class TrainingSummary extends StatelessWidget {
   }
 
   String getNiceCaloriesDisplay(double kilocalories) {
-    // getSharedPreferences();
-    // // spalone kilokalorie
-    // // Kcal ~= METS * bodyMassKg * timePerformingHours
-    //
-    // if (weight != null && totalDistance > 0.0) {
-    //   var mets = 6.0; // dla biegania
-    //   double kilocalories = mets * weight * (totalTime / 3600);
-    //
-    //   return kilocalories.toStringAsFixed(2) + " kcal";
-    // } else {
-    //   return "0.0 kcal";
-    // }
-
-    return kilocalories.toStringAsFixed(2) + " kcal";
+    return "spalone kalorie:" + kilocalories.toStringAsFixed(2) + " kcal";
 
     // return "kcal";
   }

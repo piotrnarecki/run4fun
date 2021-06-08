@@ -197,13 +197,13 @@ class TrainingViewState extends State<TrainingView> {
     if (weight != null && speed != null && seconds != null) {
       double mets = 1.6 * speed; // dla biegania
 
-      double kilocalories = mets * weight * (totalTime / 3600);
+      double kilocalories = mets * weight * (seconds / 3600)/1000;
 
       // double kilocalories = speed * weight * totalTime;
 
       return kilocalories;
     } else {
-      return 70.0;
+      return 0.0;
     }
   }
 
@@ -293,9 +293,9 @@ class TrainingViewState extends State<TrainingView> {
 
     var avgPace = calculateAvgPace(totalTime, totalDistance);
 
-    var kilocalories = 1000.0;
+    // var kilocalories = 1000.0;
     var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
-        avgSpeed, avgPace, kilocalories); // srednia predkosc
+        avgSpeed, avgPace, calories); // srednia predkosc
 
     // var trainingList = [
     //   latitude.toString(),
@@ -409,11 +409,11 @@ class TrainingViewState extends State<TrainingView> {
               children: [
                 Padding(padding: EdgeInsets.only(top: 10.0)),
 
-                Text(
-                  "w: $weight, h: $height",
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
+                // Text(
+                //   "w: $weight, h: $height",
+                //   style: TextStyle(fontSize: 20),
+                //   textAlign: TextAlign.center,
+                // ),
                 Text(
                   getNiceTimeDisplay(seconds),
                   style: TextStyle(fontSize: 50),
@@ -429,11 +429,11 @@ class TrainingViewState extends State<TrainingView> {
                   style: TextStyle(fontSize: 50, color: colorOfSpeed),
                   textAlign: TextAlign.center,
                 ),
-                // Text(
-                //   getNiceCaloriesDisplay(seconds, distance, speed),
-                //   style: TextStyle(fontSize: 50),
-                //   textAlign: TextAlign.center,
-                // ),
+                Text(
+                  getNiceCaloriesDisplay(seconds, distance, speed),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
                 TextButton(
                   onPressed: buttonPressed,
                   onLongPress: clearDistance,
