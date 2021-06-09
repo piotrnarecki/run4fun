@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'widgets.dart';
-
+import 'package:run4fun/reset.dart';
 enum ApplicationLoginState {
   loggedOut,
   emailAddress,
@@ -42,7 +41,7 @@ class Authentication extends StatelessWidget {
     void Function(Exception e) error,
   ) registerAccount;
   final void Function() signOut;
-
+  
   @override
   Widget build(BuildContext context) {
     switch (loginState) {
@@ -56,6 +55,15 @@ class Authentication extends StatelessWidget {
                   startLoginFlow();
                 },
                 child: Text('LOGOWANIE'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 8),
+              child: StyledButton(
+                onPressed: () {
+                  startLoginFlow();
+                },
+                child: Text('Konto Google'),
               ),
             ),
           ],
@@ -160,6 +168,7 @@ class EmailForm extends StatefulWidget {
 class _EmailFormState extends State<EmailForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_EmailFormState');
   final _controller = TextEditingController();
+  // final _passwordReset = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -203,8 +212,40 @@ class _EmailFormState extends State<EmailForm> {
                         child: Text('DALEJ'),
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 30),
+                          child: StyledButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => ResetScreen()),
+                          ),
+                          child: Text('Zapomniałeś hasła?'),
+                        ),
+                        ),
+                      ],
+                    ),
+                    //   Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       vertical: 16.0, horizontal: 30),
+                    //   child: StyledButton(
+                    //     onPressed: () {
+                    //       Navigator.pushNamed(
+                    //         context,
+                    //         ForgotPassword.id,
+                    //       );
+                    //     },
+                    //   child: Text(
+                    //     'Zapomniałeś hasło?',
+                    //
+                    //   ),
+                    // ),
+                    //   ),
                   ],
                 ),
+
               ],
             ),
           ),
@@ -213,6 +254,8 @@ class _EmailFormState extends State<EmailForm> {
     );
   }
 }
+
+
 
 class RegisterForm extends StatefulWidget {
   RegisterForm({
@@ -427,3 +470,4 @@ class _PasswordFormState extends State<PasswordForm> {
     );
   }
 }
+

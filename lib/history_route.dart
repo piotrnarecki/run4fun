@@ -12,6 +12,16 @@ import 'trainingModel.dart';
 import 'widgets.dart';
 
 
+class HistoryRoute extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return HistoryState();
+
+
+  }
+}
+
+
 
 class HistoryRoute extends StatelessWidget {
 
