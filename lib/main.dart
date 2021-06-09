@@ -26,45 +26,46 @@ void main() {
 
 // W TEJ KLASIE BEDZIE WYSWIETLANY GLOWNY EKRAN Ekran
 
-class MainRoute extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Run 4 Fun'),
-      ),
-      body: Center(
-          child: Column(
-            children: [
-              ElevatedButton(
-                child: Text('Training'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => (TrainingRoute())),
-                  );
-                },
-              ),
-              ElevatedButton(
-                child: Text('Login'), // ten przycisk nie działa !!! JUŻ DZIAŁA !!!
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => (LoginRoute())),
-                  );
-                },
-              ),
-              ElevatedButton(
-                child: Text('Settings'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => (SettingsRoute())),
-              );
-            },
-          ),
-        ],
-      )),
-    );
-  }
-}
+// class MainRoute extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     // return Scaffold(
+//     //   appBar: AppBar(
+//     //     title: Text('Run 4 Fun'),
+//     //   ),
+//     //   body: Center(
+//     //   //     child: Column(
+//     //   //       children: [
+//     //   //         ElevatedButton(
+//     //   //           child: Text('Training'),
+//     //   //           onPressed: () {
+//     //   //             Navigator.push(
+//     //   //               context,
+//     //   //               MaterialPageRoute(builder: (context) => (TrainingRoute())),
+//     //   //             );
+//     //   //           },
+//     //   //         ),
+//     //   //         ElevatedButton(
+//     //   //           child: Text('Login'), // ten przycisk nie działa !!! JUŻ DZIAŁA !!!
+//     //   //           onPressed: () {
+//     //   //             Navigator.push(
+//     //   //               context,
+//     //   //               MaterialPageRoute(builder: (context) => (LoginRoute())),
+//     //   //             );
+//     //   //           },
+//     //   //         ),
+//     //   //         ElevatedButton(
+//     //   //           child: Text('Settings'),
+//     //   //           onPressed: () {
+//     //   //             Navigator.push(
+//     //   //               context,
+//     //   //               MaterialPageRoute(builder: (context) => (SettingsRoute())),
+//     //   //         );
+//     //   //       },
+//     //   //     ),
+//     //   //   ],
+//     //   // )),
+//     // );
+//   }
+//}

@@ -15,7 +15,20 @@ class TrainingRoute extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
-      theme: ThemeData.light(),
+       theme: ThemeData.light(),
+      // theme: ThemeData(
+      //   buttonTheme: Theme.of(context).buttonTheme.copyWith(
+      //     highlightColor: Colors.deepPurple,
+      //   ),
+      //   primarySwatch: Colors.orange,
+      //   textTheme: GoogleFonts.robotoTextTheme(
+      //     Theme.of(context).textTheme,
+      //   ),
+      //   visualDensity: VisualDensity.adaptivePlatformDensity,
+      // ),
+
+
+
       home: TrainingView(),
     );
   }
