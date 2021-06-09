@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "774471167808",
+    "project_id": "run4fun-b7af9",
+    "storage_bucket": "run4fun-b7af9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774471167808:android:403daca84f3bc8349714a5",
+        "android_client_info": {
+          "package_name": "com.example.run4fun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774471167808-aus304s2k8acena7cef36jjigp19c180.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsIxll0XX9unEH_oiBMlPnY8djUmXkQ7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774471167808-aus304s2k8acena7cef36jjigp19c180.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
