@@ -7,6 +7,7 @@ import 'login_route.dart';
 import 'dart:core';
 import 'training_summary.dart';
 import 'trainingModel.dart';
+import 'history_route.dart';
 
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
@@ -16,7 +17,8 @@ class AfterTraining extends StatelessWidget {
   // AfterTraining(List<String> trainingList) : this.trainingList = trainingList;
   // final List<String> trainingList;
 
-  AfterTraining(TrainingModel trainingModel) : this.trainingModel = trainingModel;
+  AfterTraining(TrainingModel trainingModel)
+      : this.trainingModel = trainingModel;
   final TrainingModel trainingModel;
 
   List<String> trainingList = [];
@@ -32,12 +34,9 @@ class AfterTraining extends StatelessWidget {
     var totalTime = trainingModel.totalTime; //s
     var totalDistance = trainingModel.totalDistance; //m
 
-    var avgSpeed=trainingModel.avgSpeed;  // km/h
-    var avgPace=trainingModel.avgPace;// min/km
-    var kilocalories=trainingModel.kilocalories; //kcal
-
-
-
+    var avgSpeed = trainingModel.avgSpeed; // km/h
+    var avgPace = trainingModel.avgPace; // min/km
+    var kilocalories = trainingModel.kilocalories; //kcal
 
     List<String> trainingList = [
       endDate.toString(),
@@ -46,7 +45,6 @@ class AfterTraining extends StatelessWidget {
       avgSpeed.toString(),
       avgPace.toString(),
       kilocalories.toString(),
-
     ];
 
     return trainingList;
@@ -63,6 +61,20 @@ class AfterTraining extends StatelessWidget {
         home: Scaffold(
             appBar: AppBar(
               title: Text('Podsumowanie'),
+
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => (LoginRoute())),
+                    );
+                  },
+                )
+              ],
+
+
             ),
             body: Center(
               child: ListView(children: [
@@ -78,17 +90,27 @@ class AfterTraining extends StatelessWidget {
                 //   },
                 // ),
 
+                // ElevatedButton(
+                //   child: Text('powrót'),
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => (LoginRoute())),
+                //     );
+                //   },
+                // ),
+
                 ElevatedButton(
-                  child: Text('Main route'),
+                  child: Text('historia treningów'),
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => (LoginRoute())),
+                      MaterialPageRoute(builder: (context) => (HistoryRoute())),
                     );
                   },
                 ),
 
-                Text("tutaj wszystkie treningi jednego uzytkowniak"),
+
 
                 // /***
                 //     ElevatedButton(
@@ -115,9 +137,6 @@ class AfterTraining extends StatelessWidget {
                     }
                     ),
                  */
-                
-
-                
               ]),
             )));
   }

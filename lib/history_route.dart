@@ -11,20 +11,7 @@ import 'after_training_route.dart';
 import 'trainingModel.dart';
 import 'widgets.dart';
 
-
-class HistoryRoute extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return HistoryState();
-
-
-  }
-}
-
-
-
 class HistoryRoute extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,21 +20,33 @@ class HistoryRoute extends StatelessWidget {
         theme: ThemeData.light(),
         home: Scaffold(
             appBar: AppBar(
-              title: Text('Podsumowanie'),
-            ),
+              title: Text('Historia treningów'),
 
-            body: Center(
-              child: ListView(children: [
-                ElevatedButton(
-                  child: Text('Main route'),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => (LoginRoute())),
                     );
                   },
-                ),
+                )
+              ],
 
+
+            ),
+            body: Center(
+              child: ListView(children: [
+                // ElevatedButton(
+                //   child: Text('powrót'),
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => (LoginRoute())),
+                //     );
+                //   },
+                // ),
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +63,6 @@ class HistoryRoute extends StatelessWidget {
                   ),
                 ),
               ]),
-            )
-        )
-    );
+            )));
   }
 }

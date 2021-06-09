@@ -7,6 +7,7 @@ import 'dart:core';
 import 'trainingModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'settings_route.dart';
+import 'login_route.dart';
 // W TEJ KLASIE BEDZIE TRENING
 
 class TrainingRoute extends StatelessWidget {
@@ -15,7 +16,7 @@ class TrainingRoute extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
-       theme: ThemeData.light(),
+      theme: ThemeData.light(),
       // theme: ThemeData(
       //   buttonTheme: Theme.of(context).buttonTheme.copyWith(
       //     highlightColor: Colors.deepPurple,
@@ -26,8 +27,6 @@ class TrainingRoute extends StatelessWidget {
       //   ),
       //   visualDensity: VisualDensity.adaptivePlatformDensity,
       // ),
-
-
 
       home: TrainingView(),
     );
@@ -154,8 +153,7 @@ class TrainingViewState extends State<TrainingView> {
         });
       });
 
-      streamSubscription.onDone(() =>
-          setState(() {
+      streamSubscription.onDone(() => setState(() {
             trackLocation = false;
           }));
     }
@@ -210,7 +208,7 @@ class TrainingViewState extends State<TrainingView> {
     if (weight != null && speed != null && seconds != null) {
       double mets = 1.6 * speed; // dla biegania
 
-      double kilocalories = mets * weight * (seconds / 3600)/1000;
+      double kilocalories = mets * weight * (seconds / 3600) / 1000;
 
       // double kilocalories = speed * weight * totalTime;
 
@@ -404,77 +402,78 @@ class TrainingViewState extends State<TrainingView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Trening"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.flag_outlined),
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
-              endTraining(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => (LoginRoute())),
+              );
             },
           )
         ],
       ),
       body: Center(
           child: Container(
-            alignment: Alignment.center,
-            child: ListView(
-              // mainAxisAlignment: MainAxisAlignment.center,
+        alignment: Alignment.center,
+        child: ListView(
+          // mainAxisAlignment: MainAxisAlignment.center,
 
-              children: [
-                Padding(padding: EdgeInsets.only(top: 10.0)),
+          children: [
+            Padding(padding: EdgeInsets.only(top: 10.0)),
 
-                // Text(
-                //   "w: $weight, h: $height",
-                //   style: TextStyle(fontSize: 20),
-                //   textAlign: TextAlign.center,
-                // ),
-                /**
-                Text(
-                  getNiceTimeDisplay(seconds),
-                  style: TextStyle(fontSize: 50),
-                  textAlign: TextAlign.center,
-                ),
-                    */
-                /**
-                Text(
-                  getNiceDistanceDisplay(distance),
-                  style: TextStyle(fontSize: 50),
-                  textAlign: TextAlign.center,
-                ),
-                    */
-                /**
-                Text(
-                  getNiceSpeedDisplay(speed),
-                  style: TextStyle(fontSize: 50, color: colorOfSpeed),
-                  textAlign: TextAlign.center,
-                ),
-                    */
-                /**
-                Text(
-                  getNiceCaloriesDisplay(seconds, distance, speed),
-                  style: TextStyle(fontSize: 50),
-                  textAlign: TextAlign.center,
-                ),
-                    */
-                TextButton(
-                  onPressed: buttonPressed,
-                  onLongPress: clearDistance,
-                  child: Text(
-                    buttonText,
-                    style: TextStyle(fontSize: 50, color: colorOfButton),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    endTraining(context);
-                  },
-                  child: Text(
-                    "end training",
-                    style: TextStyle(fontSize: 50, color: Colors.black),
-                  ),
-                ),
-              ],
+            // Text(
+            //   "w: $weight, h: $height",
+            //   style: TextStyle(fontSize: 20),
+            //   textAlign: TextAlign.center,
+            // ),
+
+            Text(
+              getNiceTimeDisplay(seconds),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
             ),
-          )),
+
+            Text(
+              getNiceDistanceDisplay(distance),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
+
+            Text(
+              getNiceSpeedDisplay(speed),
+              style: TextStyle(fontSize: 50, color: colorOfSpeed),
+              textAlign: TextAlign.center,
+            ),
+
+            Text(
+              getNiceCaloriesDisplay(seconds, distance, speed),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
+
+            TextButton(
+              onPressed: buttonPressed,
+              onLongPress: clearDistance,
+              child: Text(
+                buttonText,
+                style: TextStyle(fontSize: 50, color: colorOfButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                endTraining(context);
+              },
+              child: Text(
+                "zakończ",
+                style: TextStyle(fontSize: 50, color: Colors.black),
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }
