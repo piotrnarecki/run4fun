@@ -59,4 +59,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
     // implementation 'com.google.firebase:firebase-analytics'
+    
+    // od wojtka
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    
 }
