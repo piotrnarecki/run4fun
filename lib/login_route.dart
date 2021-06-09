@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:run4fun/main.dart';
 
+import 'history_route.dart';
 import 'widgets.dart';
 import 'authentication.dart';
 
@@ -201,6 +202,7 @@ class ApplicationState extends ChangeNotifier {
     try {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      // ignore: deprecated_member_use
       await credential.user!.updateProfile(displayName: displayName);
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
@@ -244,70 +246,85 @@ class _GuestBookState extends State<GuestBook> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
   final _controller = TextEditingController();
 
-
   @override
-  // Modify from here
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-    // to here.
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Row(
-            children: [
-          /**
-              Expanded(
-              child: TextFormField(
-              controller: _controller,
-              decoration: const InputDecoration(
-              hintText: 'Zostaw wiadomość',
-              ),
-              validator: (value) {
-              if (value == null || value.isEmpty) {
-              return 'Wpisz wiadomość, aby kontynuować';
-              }
-              return null;
-              },
-              ),
-              ),
-           */
-            SizedBox(width: 8),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // to here.
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Row(
+              children: [
+                SizedBox(width: 8),
                 StyledButton(
                   onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        widget.trainingList.forEach((info){
+                    if (_formKey.currentState!.validate())
+                      widget.trainingList.forEach((info){
                         _controller.text = info;
                         widget.addMessage(_controller.text);
-                        });
-                      _controller.clear();
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.send),
-                        SizedBox(width: 4),
-                        Text('WYŚLIJ DO BAZY DANYCH'),
+                      });
+                    _controller.clear();
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.send),
+                      SizedBox(width: 4),
+                      Text('WYŚLIJ DO BAZY DANYCH'),
                     ],
-                  )
-                  ,
+                  ),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    // Modify from here
-      SizedBox(height: 8),
-        for (var message in widget.messages)
-      Paragraph('${message.name}: ${message.message}'),
-      SizedBox(height: 8),
-    // to here.
-    ],
+      ],
     );
   }
 }
+
+class GuestBook2 extends StatefulWidget {
+  GuestBook2({required this.addMessage, required this.messages, required List<String> trainingList}) : this.trainingList = trainingList;
+  final FutureOr<void> Function(String message) addMessage;
+  final List<GuestBookMessage> messages;
+  final List<String> trainingList;
+
+  @override
+  _GuestBookState2 createState() => _GuestBookState2();
+}
+
+
+class _GuestBookState2 extends State<GuestBook2> {
+  final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Row(
+              children: [
+                SizedBox(width: 8),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        for (var message in widget.messages)
+          Paragraph('${message.name}: ${message.message}'),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
 
 class Training extends StatefulWidget {
   @override
@@ -345,7 +362,7 @@ class _TrainingState extends State<Training>{
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => (SettingsRoute())),
+              MaterialPageRoute(builder: (context) => (HistoryRoute())),
             );
           },
         ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:run4fun/training_on_map_route.dart';
+import 'package:run4fun/widgets.dart';
 
 import 'login_route.dart';
 
 import 'dart:core';
 import 'training_summary.dart';
 import 'trainingModel.dart';
+import 'widgets.dart';
 
 // W TEJ KLASIE BEDZIE WYSWIETLANE PODSUMOWANIE TRENINGU I DANE BEDA PRZESYLANE DO BAZY
 
@@ -19,13 +21,9 @@ class AfterTraining extends StatelessWidget {
   AfterTraining(TrainingModel trainingModel) : this.trainingModel = trainingModel;
   final TrainingModel trainingModel;
 
+
   List<String> trainingList = [];
 
-  void sendTrainingToDatabase() {
-    // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
-
-    // tutaj ma wysyłać trening do bazy danych trening
-  }
 
   List<String> getTrainingData(TrainingModel trainingModel) {
     var endDate = trainingModel.endDate;
@@ -54,7 +52,7 @@ class AfterTraining extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // trainingList=
+    trainingList=getTrainingData(trainingModel);
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -68,16 +66,6 @@ class AfterTraining extends StatelessWidget {
               child: ListView(children: [
                 TrainingSummary(trainingModel),
 
-                // ElevatedButton(
-                //   child: Text('see last training details'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (TrainingOnMap())),
-                //     );
-                //   },
-                // ),
-
                 ElevatedButton(
                   child: Text('Main route'),
                   onPressed: () {
@@ -88,37 +76,18 @@ class AfterTraining extends StatelessWidget {
                   },
                 ),
 
-                Text("tutaj wszystkie treningi jednego uzytkowniak"),
-
-                // /***
-                //     ElevatedButton(
-                //     child: Text('Send training to database'),
-                //     onPressed: () {
-                //  */
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GuestBook(
-                        addMessage: (String message) =>
-                            appState.addMessageToGuestBook(message),
-                        messages: appState.guestBookMessages,
-                        // trainingList: trainingList,
-                        // trainingList: ["trening","data","dystans"],
-                        trainingList: getTrainingData(trainingModel),
-                      ),
-                    ],
-                  ),
+                    SizedBox(width: 8),
+                      GuestBook(addMessage: (String message) => appState.addMessageToGuestBook(message), messages: appState.guestBookMessages, trainingList: trainingList,
+                      )
+                  ]),
                 ),
-                /**
-                    sendTrainingToDatabase();
-                    }
-                    ),
-                 */
-                
-
-                
               ]),
-            )));
+            )
+        )
+    );
   }
 }
