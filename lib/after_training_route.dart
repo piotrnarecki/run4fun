@@ -79,7 +79,7 @@ class AfterTraining extends StatelessWidget {
                 // ),
 
                 ElevatedButton(
-                  child: Text('Main route'),
+                  child: Text('Wróć do początku'),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -88,7 +88,7 @@ class AfterTraining extends StatelessWidget {
                   },
                 ),
 
-                Text("tutaj wszystkie treningi jednego uzytkowniak"),
+                // Text("tutaj wszystkie treningi jednego uzytkowniak"),
 
                 // /***
                 //     ElevatedButton(
