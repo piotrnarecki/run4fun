@@ -29,11 +29,11 @@ class TrainingView extends StatefulWidget {
 class TrainingViewState extends State<TrainingView> {
   bool metricDistanse = true;
 
-  //var distanceUnits = "km";
+  var distanceUnits = "km";
 
   bool metricSpeed = true;
 
-  //var speedUnits = "km/h";
+  var speedUnits = "km/h";
 
   var height;
   var weight;

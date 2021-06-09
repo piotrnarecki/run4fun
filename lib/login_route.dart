@@ -339,7 +339,7 @@ class _TrainingState extends State<Training>{
             children:[
               Icon(Icons.send),
               SizedBox(width:4),
-              Text('Ustawienia'),
+              Text('Historia'),
             ],
           ),
           onPressed: () {
@@ -348,6 +348,21 @@ class _TrainingState extends State<Training>{
               MaterialPageRoute(builder: (context) => (SettingsRoute())),
             );
           },
+        ),
+        StyledButton(
+            child: Row(
+              children:[
+                Icon(Icons.send),
+                SizedBox(width:4),
+                Text('Ustawienia'),
+              ],
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => (SettingsRoute())),
+              );
+            },
         ),
       ],
     );
