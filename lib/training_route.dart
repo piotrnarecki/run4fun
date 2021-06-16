@@ -74,7 +74,7 @@ class TrainingViewState extends State<TrainingView> {
   List<LatLng> listOfLocations = [];
 
   var distance = 0.0;
-  var minSpeed = 0.5;
+  var minSpeed = 0.2; // 0.5
   var speed;
 
   var listSize = 0;
@@ -128,9 +128,9 @@ class TrainingViewState extends State<TrainingView> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          latitude = num.parse(location.latitude.toStringAsFixed(3));
+          latitude = num.parse(location.latitude.toStringAsFixed(4));
 
-          longitude = num.parse(location.longitude.toStringAsFixed(3));
+          longitude = num.parse(location.longitude.toStringAsFixed(4));
 
           LatLng currentLocation = LatLng(latitude, longitude);
           listOfLocations.add(currentLocation);
@@ -180,7 +180,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  calculateDistanse(List listOfLocations) {
+  double calculateDistanse(List<LatLng> listOfLocations) {
     var length = listOfLocations.length;
 
     startLatitude = listOfLocations[length - 2].latitude;
@@ -436,6 +436,14 @@ class TrainingViewState extends State<TrainingView> {
 
           children: [
             Padding(padding: EdgeInsets.only(top: 10.0)),
+
+
+            Text(
+              "$latitude $longitude",
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+
 
             Text(
               "lista: $listSize",

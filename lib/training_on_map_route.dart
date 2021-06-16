@@ -9,11 +9,10 @@ import 'package:run4fun/trainingModel.dart';
 const double CAMERA_ZOOM = 13;
 const double CAMERA_TILT = 0;
 const double CAMERA_BEARING = 30;
-const LatLng SOURCE_LOCATION = LatLng(51.254279895398746, 15.608545592851225);
-const LatLng DEST_LOCATION = LatLng(51.25183543202978, 15.615625447742124);
+LatLng SOURCE_LOCATION = LatLng(51.254279895398746, 15.608545592851225);
+LatLng DEST_LOCATION = LatLng(51.25183543202978, 15.615625447742124);
 
 LatLng START_LOCATION = LatLng(0, 0);
-
 
 class TrainingOnMap extends StatefulWidget {
   TrainingOnMap(TrainingModel trainingModel)
@@ -48,7 +47,6 @@ class TrainingOnMapState extends State<TrainingOnMap> {
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = "<AIzaSyArLbGXGnUz7MpiMe-jI0hmW77zgqUOyHw>";
 
-
   // ikonki
 // for my custom icons
 //   BitmapDescriptor sourceIcon;
@@ -59,9 +57,14 @@ class TrainingOnMapState extends State<TrainingOnMap> {
     super.initState();
     // setSourceAndDestinationIcons();
 
-    START_LOCATION=getPointsFromTraining(widget.trainingModel)[0];
+    START_LOCATION = getPointsFromTraining(widget.trainingModel)[0];
 
+    // DEST_LOCATION = getPointsFromTraining(widget.trainingModel)[10];
 
+    print(
+        "LOKALIZACJA: ${widget.trainingModel.listOfLocations[10].latitude} ${widget.trainingModel.listOfLocations[10].longitude}");
+
+    print("LISTA: ${widget.trainingModel.listOfLocations.length}");
   }
 
   // void setSourceAndDestinationIcons() async {
@@ -75,8 +78,6 @@ class TrainingOnMapState extends State<TrainingOnMap> {
 
   @override
   Widget build(BuildContext context) {
-
-
     CameraPosition initialLocation = CameraPosition(
         zoom: CAMERA_ZOOM,
         bearing: CAMERA_BEARING,
@@ -112,22 +113,16 @@ class TrainingOnMapState extends State<TrainingOnMap> {
 
   void setMapPins(List<LatLng> listOfLocation) {
     setState(() {
-
+      var i = 0;
       listOfLocation.forEach((location) {
-
+        print("LOKACJA: ${location.latitude} ${location.latitude} I= $i");
         _markers.add(Marker(
-          markerId: MarkerId("1"),
-
+          markerId: MarkerId("$i"),
           position: location,
-          // icon: sourceIcon
+          // icon: Icons.directions_run_sharp
         ));
-
+        i++;
       });
-
-
-
-
-
 
       //
       // source pin
@@ -158,9 +153,6 @@ class TrainingOnMapState extends State<TrainingOnMap> {
       //   position: LatLng(51.26453857578869, 15.61730245042204),
       //   // icon: destinationIcon
       // ));
-
-
-
     });
   }
 
@@ -169,6 +161,8 @@ class TrainingOnMapState extends State<TrainingOnMap> {
         PointLatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude);
     PointLatLng POINT_DEST_LOCATION =
         PointLatLng(DEST_LOCATION.latitude, DEST_LOCATION.longitude);
+
+
 
     List<PointLatLng> result = (await polylinePoints.getRouteBetweenCoordinates(
             googleAPIKey, POINT_SOURCE_LOCATION, POINT_DEST_LOCATION)
