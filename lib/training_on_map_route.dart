@@ -48,6 +48,8 @@ class TrainingOnMapState extends State<TrainingOnMap> {
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPIKey = "<AIzaSyArLbGXGnUz7MpiMe-jI0hmW77zgqUOyHw>";
 
+
+  // ikonki
 // for my custom icons
 //   BitmapDescriptor sourceIcon;
 //   BitmapDescriptor destinationIcon;
