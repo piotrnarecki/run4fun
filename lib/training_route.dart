@@ -437,7 +437,6 @@ class TrainingViewState extends State<TrainingView> {
           children: [
             Padding(padding: EdgeInsets.only(top: 10.0)),
 
-
             Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
