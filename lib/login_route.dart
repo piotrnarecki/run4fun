@@ -331,9 +331,9 @@ class _GuestBookState2 extends State<GuestBook2> {
             border: TableBorder(horizontalInside: BorderSide(width: 0.7, color: Colors.grey, style: BorderStyle.solid)),
             children: [
               for (var message in widget.messages)
-                if (message.name == FirebaseAuth.instance.currentUser!.displayName)
+                //if (message.name == FirebaseAuth.instance.currentUser!.displayName)
                   TableRow(children: [
-                      /**
+
                       TableCell(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -343,7 +343,7 @@ class _GuestBookState2 extends State<GuestBook2> {
                           ],
                         ),
                       ),
-                      */
+
 
                       TableCell(
                           child: Row(
