@@ -74,25 +74,11 @@ class HomePage extends StatelessWidget {
           endIndent: 8,
           color: Colors.grey,
         ),
-        /**
-            Header("Przykładowy trening"),
-            Paragraph(
-            'Zwykłe bieganie + sprint',
-            ),
-         */
         Consumer<ApplicationState>(
             builder: (context, appState, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (appState.loginState == ApplicationLoginState.loggedIn) ...[
-                  /**
-                      Header('Wiadomość'),
-                      GuestBook(
-                      addMessage: (String message) =>
-                      appState.addMessageToGuestBook(message),
-                      messages: appState.guestBookMessages,
-                      ),
-                   */
                   Training(),
                 ]
               ],
@@ -108,8 +94,6 @@ class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
-
-  get trainingList => trainingList[0];
 
   Future<void> init() async {
     await Firebase.initializeApp();
@@ -128,6 +112,12 @@ class ApplicationState extends ChangeNotifier {
               GuestBookMessage(
                 name: document.data()['name'],
                 message: document.data()['text'],
+                kcal: document.data()['kcal'],
+                pace: document.data()['pace'],
+                speed: document.data()['speed'],
+                distance: document.data()['distance'],
+                time: document.data()['time'],
+                date: document.data()['date'],
               ),
             );
           });
@@ -212,12 +202,18 @@ class ApplicationState extends ChangeNotifier {
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
-  Future<DocumentReference> addMessageToGuestBook(String message) {
+  Future<DocumentReference> addMessageToGuestBook(String message, kcal, pace, speed, distance, time, date) {
     if (_loginState != ApplicationLoginState.loggedIn) {
       throw Exception('Must be logged in');
     }
 
     return FirebaseFirestore.instance.collection('guestbook').add({
+      'date':date,
+      'time':time,
+      'distance':distance,
+      'speed': speed,
+      'pace': pace,
+      'kcal': kcal,
       'text': message,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'name': FirebaseAuth.instance.currentUser!.displayName,
@@ -227,15 +223,27 @@ class ApplicationState extends ChangeNotifier {
 }
 
 class GuestBookMessage {
-  GuestBookMessage({required this.name, required this.message});
+  GuestBookMessage({required this.name, required this.message, required this.kcal, required this.pace, required this.speed, required this.distance, required this.time, required this.date});
   final String name;
   final String message;
+  final String kcal;
+  final String pace;
+  final String speed;
+  final String distance;
+  final String time;
+  final String date;
 }
 
 class GuestBook extends StatefulWidget {
-  GuestBook({required this.addMessage, required this.messages, required List<String> trainingList}) : this.trainingList = trainingList;
-  final FutureOr<void> Function(String message) addMessage;
+  GuestBook({required this.addMessage, required this.messages, required this.kcal, required this.pace, required this.speed, required this.distance, required this.time, required this.date, required List<String> trainingList}) : this.trainingList = trainingList;
+  final FutureOr<void> Function(String message, String kcal, String pace, String speed, String distance, String time, String date) addMessage;
   final List<GuestBookMessage> messages;
+  final String kcal;
+  final String pace;
+  final String speed;
+  final String distance;
+  final String time;
+  final String date;
   final List<String> trainingList;
 
   @override
@@ -262,10 +270,8 @@ class _GuestBookState extends State<GuestBook> {
                 StyledButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate())
-                      widget.trainingList.forEach((info){
-                        _controller.text = info;
-                        widget.addMessage(_controller.text);
-                      });
+                        _controller.text = widget.kcal;
+                        widget.addMessage(_controller.text, widget.kcal.toString(), widget.pace.toString(), widget.speed.toString(), widget.distance.toString(), widget.time.toString(), widget.date.toString());
                     _controller.clear();
                   },
                   child: Row(
@@ -286,9 +292,15 @@ class _GuestBookState extends State<GuestBook> {
 }
 
 class GuestBook2 extends StatefulWidget {
-  GuestBook2({required this.addMessage, required this.messages, required List<String> trainingList}) : this.trainingList = trainingList;
-  final FutureOr<void> Function(String message) addMessage;
+  GuestBook2({required this.addMessage, required this.messages, required this.kcal, required this.pace, required this.speed, required this.distance, required this.time, required this.date, required List<String> trainingList}) : this.trainingList = trainingList;
+  final FutureOr<void> Function(String message, String kcal, String pace, String speed, String distance, String time, String date) addMessage;
   final List<GuestBookMessage> messages;
+  final String kcal;
+  final String pace;
+  final String speed;
+  final String distance;
+  final String time;
+  final String date;
   final List<String> trainingList;
 
   @override
@@ -298,7 +310,6 @@ class GuestBook2 extends StatefulWidget {
 
 class _GuestBookState2 extends State<GuestBook2> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
-  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -316,11 +327,79 @@ class _GuestBookState2 extends State<GuestBook2> {
             ),
           ),
         ),
-        SizedBox(height: 8),
-        for (var message in widget.messages)
-          Paragraph('${message.name}: ${message.message}'),
-        SizedBox(height: 8),
-      ],
+        Table(
+            border: TableBorder.all(width: 0.8, color: Colors.grey),
+            children: [
+              for (var message in widget.messages)
+                if (message.name == FirebaseAuth.instance.currentUser!.displayName)
+                  TableRow(children: [
+                      /**
+                      TableCell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            new Text(message.name),
+                            //new Text(message.message),
+                          ],
+                        ),
+                      ),
+                      */
+                      TableCell(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                            //new Text(message.name),
+                              new Text(message.kcal),
+                            ]
+                          )
+                      ),
+                      TableCell(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                            //new Text(message.name),
+                            new Text(message.pace),
+                            ]
+                          )
+                        ),
+                      TableCell(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                //new Text(message.name),
+                                new Text(message.speed),
+                              ]
+                          )
+                      ),
+                      TableCell(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                //new Text(message.name),
+                                new Text(message.distance),
+                              ]
+                          )
+                      ),
+                      TableCell(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                //new Text(message.name),
+                                new Text(message.time),
+                              ]
+                          )
+                      ),
+                      TableCell(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                            //new Text(message.name),
+                            new Text(message.date),
+                            ]
+                          )
+                        )]
+              )],
+        )]
     );
   }
 }

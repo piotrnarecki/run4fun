@@ -38,25 +38,20 @@ class HistoryRoute extends StatelessWidget {
             ),
             body: Center(
               child: ListView(children: [
-                // ElevatedButton(
-                //   child: Text('powrót'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (LoginRoute())),
-                //     );
-                //   },
-                // ),
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GuestBook2(
-                        addMessage: (String message) =>
-                            appState.addMessageToGuestBook(message),
+                        kcal: '',
+                        pace: '',
+                        speed: '',
+                        distance: '',
+                        time: '',
+                        date: '',
+                        addMessage: (String message, kcal, pace, speed, distance, time, date) =>
+                            appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
-                        // trainingList: trainingList,
-                        // trainingList: ["trening","data","dystans"],
                         trainingList: [],
                       ),
                     ],

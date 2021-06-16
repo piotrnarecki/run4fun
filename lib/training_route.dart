@@ -439,42 +439,32 @@ class TrainingViewState extends State<TrainingView> {
 
 
             Text(
-              "$latitude $longitude",
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-
-
-            Text(
-              "lista: $listSize",
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-
-            Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
+            */
+            /**
             Text(
               getNiceDistanceDisplay(distance),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
+            */
+            /**
             Text(
               getNiceSpeedDisplay(speed),
               style: TextStyle(fontSize: 50, color: colorOfSpeed),
               textAlign: TextAlign.center,
             ),
-
+            */
+            /**
             Text(
               getNiceCaloriesDisplay(seconds, distance, speed),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
+            */
             TextButton(
               onPressed: buttonPressed,
               onLongPress: clearDistance,

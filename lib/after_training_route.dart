@@ -14,9 +14,6 @@ import 'history_route.dart';
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
-  // AfterTraining(List<String> trainingList) : this.trainingList = trainingList;
-  // final List<String> trainingList;
-
   AfterTraining(TrainingModel trainingModel)
       : this.trainingModel = trainingModel;
   final TrainingModel trainingModel;
@@ -65,7 +62,13 @@ class AfterTraining extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // trainingList=
+    trainingList = getTrainingData(trainingModel);
+    var KCAL = trainingList[5];
+    var PACE = trainingList[4];
+    var SPEED = trainingList[3];
+    var DISTANCE = trainingList[2];
+    var TIME = trainingList[1];
+    var DATE = trainingList[0];
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -93,23 +96,16 @@ class AfterTraining extends StatelessWidget {
               child: ListView(children: [
                 TrainingSummary(trainingModel),
 
-                // ElevatedButton(
-                //   child: Text('see last training details'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (TrainingOnMap())),
-                //     );
-                //   },
-                // ),
-
-                ElevatedButton(
+                
+                
+                 ElevatedButton(
                   child: Text('mapa'),
                   onPressed: () {
                     showTrainingOnMap(trainingModel,context);
                   },
                 ),
-
+                
+                
                 ElevatedButton(
                   child: Text('historia treningów'),
                   onPressed: () {
@@ -119,25 +115,21 @@ class AfterTraining extends StatelessWidget {
                     );
                   },
                 ),
-
-
-
-                // /***
-                //     ElevatedButton(
-                //     child: Text('Send training to database'),
-                //     onPressed: () {
-                //  */
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GuestBook(
-                        addMessage: (String message) =>
-                            appState.addMessageToGuestBook(message),
+                        kcal: KCAL,
+                        pace: PACE,
+                        speed: SPEED,
+                        distance: DISTANCE,
+                        time: TIME,
+                        date: DATE,
+                        addMessage: (String message, kcal, pace, speed, distance, time, date) =>
+                            appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
-                        // trainingList: trainingList,
-                        // trainingList: ["trening","data","dystans"],
-                        trainingList: getTrainingData(trainingModel),
+                        trainingList: trainingList,
                       ),
                     ],
                   ),
