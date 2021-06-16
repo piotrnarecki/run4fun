@@ -74,25 +74,11 @@ class HomePage extends StatelessWidget {
           endIndent: 8,
           color: Colors.grey,
         ),
-        /**
-            Header("Przykładowy trening"),
-            Paragraph(
-            'Zwykłe bieganie + sprint',
-            ),
-         */
         Consumer<ApplicationState>(
             builder: (context, appState, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (appState.loginState == ApplicationLoginState.loggedIn) ...[
-                  /**
-                      Header('Wiadomość'),
-                      GuestBook(
-                      addMessage: (String message) =>
-                      appState.addMessageToGuestBook(message),
-                      messages: appState.guestBookMessages,
-                      ),
-                   */
                   Training(),
                 ]
               ],
@@ -108,14 +94,6 @@ class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
-
-  //get trainingList => trainingList[0];
-  //get kcal => kcal;
-  //get pace => pace;
-  //get speed => speed;
-  //get distance => distance;
-  //get time => time;
-  //get date => date;
 
   Future<void> init() async {
     await Firebase.initializeApp();
@@ -229,7 +207,6 @@ class ApplicationState extends ChangeNotifier {
       throw Exception('Must be logged in');
     }
 
-
     return FirebaseFirestore.instance.collection('guestbook').add({
       'date':date,
       'time':time,
@@ -293,12 +270,8 @@ class _GuestBookState extends State<GuestBook> {
                 StyledButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate())
-                      //widget.trainingList.forEach((info){
                         _controller.text = widget.kcal;
                         widget.addMessage(_controller.text, widget.kcal.toString(), widget.pace.toString(), widget.speed.toString(), widget.distance.toString(), widget.time.toString(), widget.date.toString());
-                      //});
-                          //_controller.text = widget.date;
-                          //widget.addMessage(_controller.text, widget.kcal.toString(), widget.pace.toString(), widget.speed.toString(), widget.distance.toString(), widget.time.toString(), widget.date.toString());
                     _controller.clear();
                   },
                   child: Row(
@@ -319,10 +292,6 @@ class _GuestBookState extends State<GuestBook> {
 }
 
 class GuestBook2 extends StatefulWidget {
- // GuestBook2({required this.addMessage, required this.messages, required List<String> trainingList}) : this.trainingList = trainingList;
- // final FutureOr<void> Function(String message) addMessage;
- // final List<GuestBookMessage> messages;
- // final List<String> trainingList;
   GuestBook2({required this.addMessage, required this.messages, required this.kcal, required this.pace, required this.speed, required this.distance, required this.time, required this.date, required List<String> trainingList}) : this.trainingList = trainingList;
   final FutureOr<void> Function(String message, String kcal, String pace, String speed, String distance, String time, String date) addMessage;
   final List<GuestBookMessage> messages;
@@ -342,7 +311,6 @@ class GuestBook2 extends StatefulWidget {
 class _GuestBookState2 extends State<GuestBook2> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
 
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -359,10 +327,6 @@ class _GuestBookState2 extends State<GuestBook2> {
             ),
           ),
         ),
-        //SizedBox(height: 8),
-        //for (var message in widget.messages)
-        //  Paragraph('${message.name}: ${message.message}'),
-        //SizedBox(height: 8),
         Table(
             border: TableBorder.all(width: 0.8, color: Colors.grey),
             children: [

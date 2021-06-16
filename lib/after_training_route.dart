@@ -14,9 +14,6 @@ import 'history_route.dart';
 // TUTAJ DANE PRZESYLANE DO BAZY DANYCH
 
 class AfterTraining extends StatelessWidget {
-  // AfterTraining(List<String> trainingList) : this.trainingList = trainingList;
-  // final List<String> trainingList;
-
   AfterTraining(TrainingModel trainingModel)
       : this.trainingModel = trainingModel;
   final TrainingModel trainingModel;
@@ -85,27 +82,6 @@ class AfterTraining extends StatelessWidget {
             body: Center(
               child: ListView(children: [
                 TrainingSummary(trainingModel),
-
-                // ElevatedButton(
-                //   child: Text('see last training details'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (TrainingOnMap())),
-                //     );
-                //   },
-                // ),
-
-                // ElevatedButton(
-                //   child: Text('powrót'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (LoginRoute())),
-                //     );
-                //   },
-                // ),
-
                 ElevatedButton(
                   child: Text('historia treningów'),
                   onPressed: () {
@@ -115,14 +91,6 @@ class AfterTraining extends StatelessWidget {
                     );
                   },
                 ),
-
-
-
-                // /***
-                //     ElevatedButton(
-                //     child: Text('Send training to database'),
-                //     onPressed: () {
-                //  */
                 Consumer<ApplicationState>(
                   builder: (context, appState, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +105,6 @@ class AfterTraining extends StatelessWidget {
                         addMessage: (String message, kcal, pace, speed, distance, time, date) =>
                             appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
-                        // trainingList: trainingList,
-                        // trainingList: ["trening","data","dystans"],
                         trainingList: trainingList,
                       ),
                     ],
