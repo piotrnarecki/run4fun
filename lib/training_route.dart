@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'after_training_route.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -70,11 +71,12 @@ class TrainingViewState extends State<TrainingView> {
   var endLatitude;
   var endLongitude;
 
+  List<LatLng> listOfLocations = [];
+
   var distance = 0.0;
-  var minSpeed = 0.5;
+  var minSpeed = 0.2; // 0.5
   var speed;
 
-  var listOfLocations = [];
   var listSize = 0;
   List<double> listOfSpeed = [];
 
@@ -99,6 +101,8 @@ class TrainingViewState extends State<TrainingView> {
     // speed=0.0;
 
     buttonText = "Start";
+
+    listOfLocations.clear();
   }
 
   Future<void> getSharedPreferences() async {
@@ -124,17 +128,18 @@ class TrainingViewState extends State<TrainingView> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          latitude = num.parse(location.latitude.toStringAsFixed(3));
+          latitude = num.parse(location.latitude.toStringAsFixed(4));
 
-          longitude = num.parse(location.longitude.toStringAsFixed(3));
+          longitude = num.parse(location.longitude.toStringAsFixed(4));
 
-          listOfLocations.add(location);
+          LatLng currentLocation = LatLng(latitude, longitude);
+          listOfLocations.add(currentLocation);
 
           listSize = listOfLocations.length;
 
           var length = listOfLocations.length;
 
-          if (length > 2 && speed > minSpeed) {
+          if (listSize > 2 && speed > minSpeed) {
             // zmienic min speed
             colorOfSpeed = Colors.black;
 
@@ -175,7 +180,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  calculateDistanse(List listOfLocations) {
+  double calculateDistanse(List<LatLng> listOfLocations) {
     var length = listOfLocations.length;
 
     startLatitude = listOfLocations[length - 2].latitude;
@@ -305,9 +310,23 @@ class TrainingViewState extends State<TrainingView> {
     var avgPace = calculateAvgPace(totalTime, totalDistance);
 
     // var kilocalories = 1000.0;
-    var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
-        avgSpeed, avgPace, calories); // srednia predkosc
 
+    if (listOfLocations.length > 0) {
+      var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
+          avgSpeed, avgPace, calories, listOfLocations); // srednia predkosc
+
+      Navigator.push(
+        context,
+        // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+        MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
+      );
+    } else {
+      Navigator.push(
+        context,
+        // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
+        MaterialPageRoute(builder: (context) => (LoginRoute())),
+      );
+    }
     // var trainingList = [
     //   latitude.toString(),
     //   longitude.toString(),
@@ -316,12 +335,6 @@ class TrainingViewState extends State<TrainingView> {
     // ];
 
 // tutaj dodaj do bazy
-
-    Navigator.push(
-      context,
-      // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
-      MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
-    );
   }
 
 // METODY OBLICZENIOWE
@@ -424,12 +437,7 @@ class TrainingViewState extends State<TrainingView> {
           children: [
             Padding(padding: EdgeInsets.only(top: 10.0)),
 
-            // Text(
-            //   "w: $weight, h: $height",
-            //   style: TextStyle(fontSize: 20),
-            //   textAlign: TextAlign.center,
-            // ),
-            /**
+
             Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
