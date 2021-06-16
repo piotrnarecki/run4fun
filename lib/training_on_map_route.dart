@@ -109,7 +109,7 @@ class TrainingOnMapState extends State<TrainingOnMap> {
     setState(() {
       var i = 0;
       listOfLocation.forEach((location) {
-        print("LOKACJA: ${location.latitude} ${location.latitude} I= $i");
+        print("LOKACJA: ${location.latitude} ${location.longitude} I= $i");
         _markers.add(Marker(
           markerId: MarkerId("$i"),
           position: location,

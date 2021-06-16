@@ -128,9 +128,9 @@ class TrainingViewState extends State<TrainingView> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          latitude = num.parse(location.latitude.toStringAsFixed(4));
+          latitude = num.parse(location.latitude.toStringAsFixed(6));
 
-          longitude = num.parse(location.longitude.toStringAsFixed(4));
+          longitude = num.parse(location.longitude.toStringAsFixed(6));
 
           LatLng currentLocation = LatLng(latitude, longitude);
           listOfLocations.add(currentLocation);
