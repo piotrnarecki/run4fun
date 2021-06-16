@@ -10,18 +10,30 @@ import 'login_route.dart';
 import 'after_training_route.dart';
 import 'trainingModel.dart';
 import 'widgets.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+List<GDPData> getChartData(date, distance) {
+  final List<GDPData> chartData = [
+    GDPData('16-06-2021', '5')
+  ];
+  return chartData;
+}
+
+class GDPData{
+  GDPData(this.date, this.distance);
+  final String date;
+  final String distance;
+}
 
 class HistoryRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Location Example',
         theme: ThemeData.light(),
         home: Scaffold(
             appBar: AppBar(
               title: Text('Historia treningów'),
-
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.arrow_back),
@@ -33,9 +45,7 @@ class HistoryRoute extends StatelessWidget {
                   },
                 )
               ],
-
-
-            ),
+          ),
             body: Center(
               child: ListView(children: [
                 Consumer<ApplicationState>(
@@ -58,6 +68,8 @@ class HistoryRoute extends StatelessWidget {
                   ),
                 ),
               ]),
-            )));
+            )
+        )
+    );
   }
 }

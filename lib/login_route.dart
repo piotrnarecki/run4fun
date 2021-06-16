@@ -328,7 +328,7 @@ class _GuestBookState2 extends State<GuestBook2> {
           ),
         ),
         Table(
-            border: TableBorder.all(width: 0.8, color: Colors.grey),
+            border: TableBorder(horizontalInside: BorderSide(width: 0.7, color: Colors.grey, style: BorderStyle.solid)),
             children: [
               for (var message in widget.messages)
                 if (message.name == FirebaseAuth.instance.currentUser!.displayName)
@@ -344,11 +344,11 @@ class _GuestBookState2 extends State<GuestBook2> {
                         ),
                       ),
                       */
+
                       TableCell(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                            //new Text(message.name),
                               new Text(message.kcal),
                             ]
                           )
@@ -357,16 +357,15 @@ class _GuestBookState2 extends State<GuestBook2> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                            //new Text(message.name),
                             new Text(message.pace),
                             ]
                           )
                         ),
+
                       TableCell(
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                //new Text(message.name),
                                 new Text(message.speed),
                               ]
                           )
@@ -375,25 +374,24 @@ class _GuestBookState2 extends State<GuestBook2> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                //new Text(message.name),
                                 new Text(message.distance),
                               ]
                           )
                       ),
+
                       TableCell(
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                //new Text(message.name),
                                 new Text(message.time),
                               ]
                           )
                       ),
+
                       TableCell(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                            //new Text(message.name),
                             new Text(message.date),
                             ]
                           )
