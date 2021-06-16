@@ -52,7 +52,13 @@ class AfterTraining extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // trainingList=
+    trainingList = getTrainingData(trainingModel);
+    var KCAL = trainingList[5];
+    var PACE = trainingList[4];
+    var SPEED = trainingList[3];
+    var DISTANCE = trainingList[2];
+    var TIME = trainingList[1];
+    var DATE = trainingList[0];
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -122,12 +128,18 @@ class AfterTraining extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GuestBook(
-                        addMessage: (String message) =>
-                            appState.addMessageToGuestBook(message),
+                        kcal: KCAL,
+                        pace: PACE,
+                        speed: SPEED,
+                        distance: DISTANCE,
+                        time: TIME,
+                        date: DATE,
+                        addMessage: (String message, kcal, pace, speed, distance, time, date) =>
+                            appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
                         // trainingList: trainingList,
                         // trainingList: ["trening","data","dystans"],
-                        trainingList: getTrainingData(trainingModel),
+                        trainingList: trainingList,
                       ),
                     ],
                   ),
