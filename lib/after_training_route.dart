@@ -23,6 +23,19 @@ class AfterTraining extends StatelessWidget {
 
   List<String> trainingList = [];
 
+
+  void showTrainingOnMap(trainingModel, context){
+
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => (TrainingOnMap(trainingModel))),
+    );
+
+  }
+
+
+
   void sendTrainingToDatabase() {
     // dane treningu będą odczytywane z globalnej tablicy zapisanej w pamieci urzadzenia
 
@@ -90,15 +103,12 @@ class AfterTraining extends StatelessWidget {
                 //   },
                 // ),
 
-                // ElevatedButton(
-                //   child: Text('powrót'),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (context) => (LoginRoute())),
-                //     );
-                //   },
-                // ),
+                ElevatedButton(
+                  child: Text('mapa'),
+                  onPressed: () {
+                    showTrainingOnMap(trainingModel,context);
+                  },
+                ),
 
                 ElevatedButton(
                   child: Text('historia treningów'),
