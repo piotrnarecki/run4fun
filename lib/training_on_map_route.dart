@@ -98,17 +98,11 @@ class TrainingOnMapState extends State<TrainingOnMap> {
     return trainingModel.listOfLocations;
   }
 
-  // void getTrainingModel(TrainingModel trainingModel){
-  //
-  //
-  //   myTrainingModel=trainingModel;
-  // }
-
   void onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
     var trainingModel = widget.trainingModel;
     setMapPins(getPointsFromTraining(trainingModel));
-    // setPolylines();
+    setPolylines(getPointsFromTraining(trainingModel));
   }
 
   void setMapPins(List<LatLng> listOfLocation) {
@@ -125,20 +119,20 @@ class TrainingOnMapState extends State<TrainingOnMap> {
       });
 
       //
-      // source pin
-      _markers.add(Marker(
-        markerId: MarkerId('sourcePin'),
-        position: SOURCE_LOCATION,
-        // icon: sourceIcon
-      ));
+      // // source pin
+      // _markers.add(Marker(
+      //   markerId: MarkerId('sourcePin'),
+      //   position: SOURCE_LOCATION,
+      //   // icon: sourceIcon
+      // ));
+      // //
       //
-
-      // destination pin
-      _markers.add(Marker(
-        markerId: MarkerId('destPin'),
-        position: DEST_LOCATION,
-        // icon: destinationIcon
-      ));
+      // // destination pin
+      // _markers.add(Marker(
+      //   markerId: MarkerId('destPin'),
+      //   position: DEST_LOCATION,
+      //   // icon: destinationIcon
+      // ));
 
       // // destination pin
       // _markers.add(Marker(
@@ -156,24 +150,66 @@ class TrainingOnMapState extends State<TrainingOnMap> {
     });
   }
 
-  setPolylines() async {
-    PointLatLng POINT_SOURCE_LOCATION =
-        PointLatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude);
-    PointLatLng POINT_DEST_LOCATION =
-        PointLatLng(DEST_LOCATION.latitude, DEST_LOCATION.longitude);
+  // setPolylines() async {
+  //
+  //
+  //   PointLatLng POINT_SOURCE_LOCATION =
+  //   PointLatLng(SOURCE_LOCATION.latitude, SOURCE_LOCATION.longitude);
+  //   PointLatLng POINT_DEST_LOCATION =
+  //   PointLatLng(DEST_LOCATION.latitude, DEST_LOCATION.longitude);
+  //
+  //
+  //
+  //   List<PointLatLng> result = (await polylinePoints.getRouteBetweenCoordinates(
+  //       googleAPIKey, POINT_SOURCE_LOCATION, POINT_DEST_LOCATION)
+  //   as List<PointLatLng>);
+  //   if (result.isNotEmpty) {
+  //     // loop through all PointLatLng points and convert them
+  //     // to a list of LatLng, required by the Polyline
+  //     result.forEach((PointLatLng point) {
+  //       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+  //     });
+  //   }
+  //
+  //
+  //
+  //   setState(() {
+  //     // create a Polyline instance
+  //     // with an id, an RGB color and the list of LatLng pairs
+  //     Polyline polyline = Polyline(
+  //         polylineId: PolylineId("poly"),
+  //         color: Color.fromARGB(255, 40, 122, 198),
+  //         points: polylineCoordinates);
+  //
+  //     // add the constructed polyline as a set of points
+  //     // to the polyline set, which will eventually
+  //     // end up showing up on the map
+  //     _polylines.add(polyline);
+  //   });
+  // }
 
+  setPolylines(List<LatLng> listOfLocation) async {
+    for (var i = 0; i < listOfLocation.length - 1; i++) {
+      PointLatLng POINT_SOURCE_LOCATION =
+          PointLatLng(listOfLocation[i].latitude, listOfLocation[i].longitude);
+      PointLatLng POINT_DEST_LOCATION = PointLatLng(
+          listOfLocation[i + 1].latitude, listOfLocation[i + 1].longitude);
 
+      print("${listOfLocation[i].latitude}");
 
-    List<PointLatLng> result = (await polylinePoints.getRouteBetweenCoordinates(
-            googleAPIKey, POINT_SOURCE_LOCATION, POINT_DEST_LOCATION)
-        as List<PointLatLng>);
-    if (result.isNotEmpty) {
-      // loop through all PointLatLng points and convert them
-      // to a list of LatLng, required by the Polyline
-      result.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      List<PointLatLng> result =
+          (await polylinePoints.getRouteBetweenCoordinates(
+                  googleAPIKey, POINT_SOURCE_LOCATION, POINT_DEST_LOCATION)
+              as List<PointLatLng>);
+      if (result.isNotEmpty) {
+        // loop through all PointLatLng points and convert them
+        // to a list of LatLng, required by the Polyline
+        result.forEach((PointLatLng point) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+      }
     }
+
     setState(() {
       // create a Polyline instance
       // with an id, an RGB color and the list of LatLng pairs
