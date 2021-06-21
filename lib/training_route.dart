@@ -128,9 +128,9 @@ class TrainingViewState extends State<TrainingView> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          latitude = num.parse(location.latitude.toStringAsFixed(4));
+          latitude = num.parse(location.latitude.toStringAsFixed(6));
 
-          longitude = num.parse(location.longitude.toStringAsFixed(4));
+          longitude = num.parse(location.longitude.toStringAsFixed(6));
 
           LatLng currentLocation = LatLng(latitude, longitude);
           listOfLocations.add(currentLocation);
@@ -223,7 +223,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  String getNiceDistanceDisplay(distance) {
+  getNiceDistanceDisplay(double distance) {
     if (distance != null) {
       if (metricDistanse) {
         if (distance < 1000) {
@@ -239,7 +239,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  String getNiceSpeedDisplay(speed) {
+  getNiceSpeedDisplay(double speed) {
     if (speed != null) {
       if (metricSpeed) {
         return ((speed * 3.6).toStringAsFixed(1)) + " km/h";
@@ -251,14 +251,9 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  String getNiceCaloriesDisplay(int seconds, distance, speed) {
-    if (speed != null && distance != null) {
-      calories = calories + calculateCalories(seconds, distance, speed);
-      return calories.toStringAsFixed(2) + " kcal";
-    }
-    else{
-      return "0.0";
-    }
+  String getNiceCaloriesDisplay(int seconds, double distance, double speed) {
+    calories = calories + calculateCalories(seconds, distance, speed);
+    return calories.toStringAsFixed(2) + " kcal";
   }
 
 // METODY PRZYCISKOW
@@ -435,65 +430,59 @@ class TrainingViewState extends State<TrainingView> {
       ),
       body: Center(
           child: Container(
-                alignment: Alignment.center,
-                child: ListView(
-                  // mainAxisAlignment: MainAxisAlignment.center,
+        alignment: Alignment.center,
+        child: ListView(
+          // mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 10.0)),
+          children: [
+            Padding(padding: EdgeInsets.only(top: 10.0)),
 
-
-                    Text(
-                      getNiceTimeDisplay(seconds),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
-
+            Text(
+              getNiceTimeDisplay(seconds),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
 
-                    Text(
-                      getNiceDistanceDisplay(distance),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
+            Text(
+              getNiceDistanceDisplay(distance),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
 
-
-                    Text(
-                      getNiceSpeedDisplay(speed),
-                      style: TextStyle(fontSize: 50, color: colorOfSpeed),
-                      textAlign: TextAlign.center,
-                    ),
-
+            Text(
+              getNiceSpeedDisplay(speed),
+              style: TextStyle(fontSize: 50, color: colorOfSpeed),
+              textAlign: TextAlign.center,
+            ),
 
 
-                    Text(
-                      getNiceCaloriesDisplay(seconds, distance, speed),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
+            Text(
+              getNiceCaloriesDisplay(seconds, distance, speed),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
-
-
-                    TextButton(
-                      onPressed: buttonPressed,
-                      onLongPress: clearDistance,
-                      child: Text(
-                        buttonText,
-                        style: TextStyle(fontSize: 50, color: colorOfButton),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        endTraining(context);
-                      },
-                      child: Text(
-                        "zakończ",
-                        style: TextStyle(fontSize: 50, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
+            TextButton(
+              onPressed: buttonPressed,
+              onLongPress: clearDistance,
+              child: Text(
+                buttonText,
+                style: TextStyle(fontSize: 50, color: colorOfButton),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                endTraining(context);
+              },
+              child: Text(
+                "zakończ",
+                style: TextStyle(fontSize: 50, color: Colors.black),
+              ),
+            ),
+          ],
+        ),
       )),
     );
   }

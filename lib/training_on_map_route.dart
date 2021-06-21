@@ -61,8 +61,8 @@ class TrainingOnMapState extends State<TrainingOnMap> {
 
     // DEST_LOCATION = getPointsFromTraining(widget.trainingModel)[10];
 
-    print(
-        "LOKALIZACJA: ${widget.trainingModel.listOfLocations[10].latitude} ${widget.trainingModel.listOfLocations[10].longitude}");
+    // print(
+    //     "LOKALIZACJA: ${widget.trainingModel.listOfLocations[10].latitude} ${widget.trainingModel.listOfLocations[10].longitude}");
 
     print("LISTA: ${widget.trainingModel.listOfLocations.length}");
   }
