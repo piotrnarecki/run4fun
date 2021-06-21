@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:run4fun/widgets.dart';
 import 'after_training_route.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
@@ -255,8 +256,7 @@ class TrainingViewState extends State<TrainingView> {
     if (speed != null && distance != null) {
       calories = calories + calculateCalories(seconds, distance, speed);
       return calories.toStringAsFixed(2) + " kcal";
-    }
-    else{
+    } else {
       return "0.0";
     }
   }
@@ -435,65 +435,69 @@ class TrainingViewState extends State<TrainingView> {
       ),
       body: Center(
           child: Container(
-                alignment: Alignment.center,
-                child: ListView(
-                  // mainAxisAlignment: MainAxisAlignment.center,
+        alignment: Alignment.center,
+        child: ListView(
+          // mainAxisAlignment: MainAxisAlignment.center,
 
-                  children: [
-                    Padding(padding: EdgeInsets.only(top: 10.0)),
+          children: [
+            Padding(padding: EdgeInsets.only(top: 10.0)),
 
+            Text(
+              getNiceTimeDisplay(seconds),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
-                    Text(
-                      getNiceTimeDisplay(seconds),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
+            Text(
+              getNiceDistanceDisplay(distance),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
+            Text(
+              getNiceSpeedDisplay(speed),
+              style: TextStyle(fontSize: 50, color: colorOfSpeed),
+              textAlign: TextAlign.center,
+            ),
 
+            Text(
+              getNiceCaloriesDisplay(seconds, distance, speed),
+              style: TextStyle(fontSize: 50),
+              textAlign: TextAlign.center,
+            ),
 
-                    Text(
-                      getNiceDistanceDisplay(distance),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
+            StyledButton(
+              onPressed: buttonPressed,
+              child: Text(buttonText,
+                  style: TextStyle(fontSize: 30, color: colorOfButton)),
+            ),
 
+            StyledButton(
+              onPressed: () {
+                endTraining(context);
+              },
+              child: Text('zakończ', style: TextStyle(fontSize: 30)),
+            ),
 
-
-                    Text(
-                      getNiceSpeedDisplay(speed),
-                      style: TextStyle(fontSize: 50, color: colorOfSpeed),
-                      textAlign: TextAlign.center,
-                    ),
-
-
-
-                    Text(
-                      getNiceCaloriesDisplay(seconds, distance, speed),
-                      style: TextStyle(fontSize: 50),
-                      textAlign: TextAlign.center,
-                    ),
-
-
-
-                    TextButton(
-                      onPressed: buttonPressed,
-                      onLongPress: clearDistance,
-                      child: Text(
-                        buttonText,
-                        style: TextStyle(fontSize: 50, color: colorOfButton),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        endTraining(context);
-                      },
-                      child: Text(
-                        "zakończ",
-                        style: TextStyle(fontSize: 50, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
+            // TextButton(
+            //   onPressed: buttonPressed,
+            //   onLongPress: clearDistance,
+            //   child: Text(
+            //     buttonText,
+            //     style: TextStyle(fontSize: 50, color: colorOfButton),
+            //   ),
+            // ),
+            // TextButton(
+            //   onPressed: () {
+            //     endTraining(context);
+            //   },
+            //   child: Text(
+            //     "zakończ",
+            //     style: TextStyle(fontSize: 50, color: Colors.black),
+            //   ),
+            // ),
+          ],
+        ),
       )),
     );
   }

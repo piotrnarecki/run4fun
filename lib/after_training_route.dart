@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:run4fun/training_on_map_route.dart';
+import 'package:run4fun/widgets.dart';
 
 import 'login_route.dart';
 
@@ -96,17 +97,26 @@ class AfterTraining extends StatelessWidget {
               child: ListView(children: [
                 TrainingSummary(trainingModel),
 
-                
-                
-                 ElevatedButton(
-                  child: Text('mapa'),
+
+
+                StyledButton(
                   onPressed: () {
                     showTrainingOnMap(trainingModel,context);
                   },
+                  child: Text('pokaż na mapie'),
                 ),
+
+
                 
-                
-                ElevatedButton(
+                //  ElevatedButton(
+                //   child: Text('mapa'),
+                //   onPressed: () {
+                //     showTrainingOnMap(trainingModel,context);
+                //   },
+                // ),
+
+
+                StyledButton(
                   child: Text('historia treningów'),
                   onPressed: () {
                     Navigator.push(

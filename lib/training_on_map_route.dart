@@ -61,8 +61,8 @@ class TrainingOnMapState extends State<TrainingOnMap> {
 
     // DEST_LOCATION = getPointsFromTraining(widget.trainingModel)[10];
 
-    print(
-        "LOKALIZACJA: ${widget.trainingModel.listOfLocations[10].latitude} ${widget.trainingModel.listOfLocations[10].longitude}");
+    // print(
+    //     "LOKALIZACJA: ${widget.trainingModel.listOfLocations[10].latitude} ${widget.trainingModel.listOfLocations[10].longitude}");
 
     print("LISTA: ${widget.trainingModel.listOfLocations.length}");
   }
@@ -109,7 +109,7 @@ class TrainingOnMapState extends State<TrainingOnMap> {
     setState(() {
       var i = 0;
       listOfLocation.forEach((location) {
-        print("LOKACJA: ${location.latitude} ${location.latitude} I= $i");
+        print("LOKACJA: ${location.latitude} ${location.longitude} I= $i");
         _markers.add(Marker(
           markerId: MarkerId("$i"),
           position: location,
