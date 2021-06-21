@@ -217,7 +217,7 @@ class _EmailFormState extends State<EmailForm> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 30),
+                            vertical: 16.0, horizontal: 20),
                           child: StyledButton(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(builder: (context) => ResetScreen()),

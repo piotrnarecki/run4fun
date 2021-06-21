@@ -397,6 +397,15 @@ class _GuestBookState2 extends State<GuestBook2> {
               Table(
                   border: TableBorder.all(width: 0.8, color: Colors.grey),
                   children: [
+                    TableRow(children:[
+                        TableCell(child: Center(child: Text('Energia\n  [kcal]'))),
+                        //TableCell(child: Center(child: Text('Tempo'))),
+                        TableCell(child: Center(child: Text('Prędkość\n   [km/h]'))),
+                        TableCell(child: Center(child: Text('Dystans\n     [m]'))),
+                        TableCell(child: Center(child: Text('Czas\n   [s]'))),
+                        TableCell(child: Center(child: Text('Data'))),
+                      ]
+                    ),
                     for (var message in widget.messages)
                       if (message.name == FirebaseAuth.instance.currentUser!.displayName)
                         TableRow(children: [
@@ -409,6 +418,7 @@ class _GuestBookState2 extends State<GuestBook2> {
                                   ]
                                 )
                             ),
+                           /**
                             TableCell(
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -418,7 +428,8 @@ class _GuestBookState2 extends State<GuestBook2> {
                                   ]
                                 )
                               ),
-                            TableCell(
+                          */
+                          TableCell(
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: <Widget>[
