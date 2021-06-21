@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,8 +44,17 @@ class LoginRoute extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // HomePage({Key? key}) : super(key: key);
+
+  bool _isLoggedIn = false;
+  late GoogleSignInAccount _userObj;
+  GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +68,9 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
 
       //Image.asset('assets/running-facts-crazy.png'),
-      SizedBox(height: 8),
+        SizedBox(height: 8),
         IconAndDetail(Icons.calendar_today, formattedDate),
-        IconAndDetail(Icons.verified_user, FirebaseAuth.instance.currentUser!.displayName!),
+        // IconAndDetail(Icons.verified_user, FirebaseAuth.instance.currentUser!.displayName!),
         Consumer<ApplicationState>(
           builder: (context, appState, _) => Authentication(
             loginState: appState.loginState,
@@ -80,6 +90,52 @@ class HomePage extends StatelessWidget {
           endIndent: 8,
           color: Colors.grey,
         ),
+            Container(
+              child: _isLoggedIn
+                  ? Column(
+                children: [
+                  Image.network(_userObj.photoUrl!),
+                  Text(_userObj.displayName!),
+                  Text(_userObj.email),
+                  TextButton(
+                      onPressed: () {
+                        _googleSignIn.signOut().then((value) {
+                          setState(() {
+                            _isLoggedIn = false;
+                          });
+                        }).catchError((e) {});
+                      },
+                      child: Text("Logout")
+                  ),
+                  //   child:
+                  //   Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => (TrainingRoute())),
+                  // );
+                ],
+              )
+                  : Center(
+                child: ElevatedButton(
+                  child: Text("Login with Google"),
+                  onPressed: () {
+                    _googleSignIn.signIn().then((userData) {
+                      setState(() {
+                        _isLoggedIn = true;
+                        _userObj = userData!;
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Training()),
+                      );
+                    }).catchError((e) {
+                      print(e);
+                    });
+
+                  },
+                ),
+              ),
+            ),
+
         Consumer<ApplicationState>(
             builder: (context, appState, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
