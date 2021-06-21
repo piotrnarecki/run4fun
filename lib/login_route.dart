@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:run4fun/trainingModel.dart';
+import 'package:run4fun/training_on_map_route.dart';
 //import 'package:run4fun/main.dart';
 
 import 'history_route.dart';
@@ -260,34 +262,6 @@ class _GuestBookState extends State<GuestBook> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.text = widget.kcal;
-    widget.addMessage(
-        _controller.text,
-        widget.kcal.toString(),
-        widget.pace.toString(),
-        widget.speed.toString(),
-        widget.distance.toString(),
-        widget.time.toString(),
-        widget.date.toString());
-    _controller.clear();
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Row(
-              children: [
-
-              SizedBox(width: 8),
-            ]
-            ),
-          ),
-        ),
-      ]);
-  }
-    /**
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,7 +296,6 @@ class _GuestBookState extends State<GuestBook> {
       ],
     );
   }
-  */
 }
 
 class GuestBook2 extends StatefulWidget {
@@ -345,6 +318,7 @@ class GuestBook2 extends StatefulWidget {
 class _GuestBookState2 extends State<GuestBook2> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
   late List<GDPData> _chartData;
+  get trainingModel => trainingModel;
 
   @override
   void initState() {
@@ -390,7 +364,7 @@ class _GuestBookState2 extends State<GuestBook2> {
               primaryXAxis: CategoryAxis(),),
           ),
         ),
-
+        /**
         Container(
           height: 300,
           child:
@@ -468,23 +442,48 @@ class _GuestBookState2 extends State<GuestBook2> {
                     )],
               ),
         ),
+        */
+
+        Container(
+          height: 5000,
+          width:1000,
+          child:
+          DataTable(
+            dataRowHeight: 16,
+            columnSpacing: 22,
+            columns: [
+              DataColumn(label: Expanded(child: Text('Energia',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Prędkość',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Dystans',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Czas',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Data',textAlign: TextAlign.center))),
+            ],
+            rows: [
+              for (var message in widget.messages)
+                if (message.name == FirebaseAuth.instance.currentUser!.displayName)
+                      DataRow(cells:[
+                          DataCell(Text(message.kcal,textAlign: TextAlign.center), onTap:(){Navigator.push(context, MaterialPageRoute(builder: (context) => (SettingsRoute())),);}),
+                          DataCell(Text(message.speed,textAlign: TextAlign.center)),
+                          DataCell(Text(message.distance,textAlign: TextAlign.center)),
+                          DataCell(Text(message.time,textAlign: TextAlign.center)),
+                          DataCell(Text((message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19))),textAlign: TextAlign.center)),
+              ],)
+            ],
+          ),
+        ),
 
         ],
     );
   }
-
   List<GDPData> getChartData(){
     final List<GDPData> chartData = [];
     for (var message in widget.messages) {
       if (message.name == FirebaseAuth.instance.currentUser!.displayName)
         chartData.add(GDPData(double.parse(message.distance),
             (message.date.substring(10, max(0, message.date.length - 10)) +'\n'+ message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19)))));
-
     }
-
     return chartData;
   }
-
 }
 
 class GDPData {
