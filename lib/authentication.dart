@@ -57,15 +57,15 @@ class Authentication extends StatelessWidget {
                 child: Text('LOGOWANIE'),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 8),
-              child: StyledButton(
-                onPressed: () {
-                  startLoginFlow();
-                },
-                child: Text('Konto Google'),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(left: 24, bottom: 8),
+            //   child: StyledButton(
+            //     onPressed: () {
+            //       startLoginFlow();
+            //     },
+            //     child: Text('Konto Google'),
+            //   ),
+            // ),
           ],
         );
       case ApplicationLoginState.emailAddress:
