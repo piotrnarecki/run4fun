@@ -1,15 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:run4fun/trainingModel.dart';
-import 'package:run4fun/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:core';
-import 'dart:async';
 import 'login_route.dart';
-import 'after_training_route.dart';
-import 'trainingModel.dart';
-import 'widgets.dart';
 
 class HistoryRoute extends StatelessWidget {
   @override
@@ -33,9 +25,8 @@ class HistoryRoute extends StatelessWidget {
                   },
                 )
               ],
-
-
             ),
+
             body: Center(
               child: ListView(children: [
                 Consumer<ApplicationState>(
@@ -43,12 +34,12 @@ class HistoryRoute extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GuestBook2(
-                        kcal: '',
-                        pace: '',
-                        speed: '',
-                        distance: '',
-                        time: '',
-                        date: '',
+                        kcal: ' ',
+                        pace: ' ',
+                        speed: ' ',
+                        distance: ' ',
+                        time: ' ',
+                        date: ' ',
                         addMessage: (String message, kcal, pace, speed, distance, time, date) =>
                             appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
@@ -57,7 +48,10 @@ class HistoryRoute extends StatelessWidget {
                     ],
                   ),
                 ),
-              ]),
-            )));
+              ]
+              ),
+            )
+      )
+    );
   }
 }
