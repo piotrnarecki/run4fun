@@ -377,6 +377,7 @@ class _GuestBookState2 extends State<GuestBook2> {
 
         Container(
           height: 300,
+          width: 1000,
           child:
           Scaffold(
             body: SfCartesianChart(
@@ -449,7 +450,7 @@ class _GuestBookState2 extends State<GuestBook2> {
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: <Widget>[
                                   //new Text(message.name),
-                                  new Text(message.date.substring(5, max(0, message.date.length-15))),
+                                  new Text((message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19)))),
                                   ]
                                 )
                               )]
@@ -466,7 +467,7 @@ class _GuestBookState2 extends State<GuestBook2> {
     for (var message in widget.messages) {
       if (message.name == FirebaseAuth.instance.currentUser!.displayName)
         chartData.add(GDPData(double.parse(message.distance),
-            message.date.substring(0, max(0, message.date.length - 15))));
+            (message.date.substring(10, max(0, message.date.length - 10)) +'\n'+ message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19)))));
 
     }
 
