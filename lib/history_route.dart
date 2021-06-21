@@ -34,12 +34,12 @@ class HistoryRoute extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GuestBook2(
-                        kcal: ' ',
-                        pace: ' ',
-                        speed: ' ',
-                        distance: ' ',
-                        time: ' ',
-                        date: ' ',
+                        kcal: '',
+                        pace: '',
+                        speed: '',
+                        distance: '',
+                        time: '',
+                        date: '',
                         addMessage: (String message, kcal, pace, speed, distance, time, date) =>
                             appState.addMessageToGuestBook(message, kcal, pace, speed, distance, time, date),
                         messages: appState.guestBookMessages,
