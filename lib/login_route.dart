@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:run4fun/trainingModel.dart';
+import 'package:run4fun/training_on_map_route.dart';
 //import 'package:run4fun/main.dart';
 
 import 'history_route.dart';
@@ -15,6 +19,8 @@ import 'package:intl/intl.dart';
 
 import 'training_route.dart';
 import 'settings_route.dart';
+
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LoginRoute extends StatelessWidget {
   @override
@@ -51,10 +57,10 @@ class HomePage extends StatelessWidget {
       body: ListView(
           children: <Widget>[
 
-      Image.asset('assets/running-facts-crazy.png'),
+      //Image.asset('assets/running-facts-crazy.png'),
       SizedBox(height: 8),
         IconAndDetail(Icons.calendar_today, formattedDate),
-        IconAndDetail(Icons.location_city, 'Wrocław'),
+        IconAndDetail(Icons.verified_user, FirebaseAuth.instance.currentUser!.displayName!),
         Consumer<ApplicationState>(
           builder: (context, appState, _) => Authentication(
             loginState: appState.loginState,
@@ -266,6 +272,7 @@ class _GuestBookState extends State<GuestBook> {
             key: _formKey,
             child: Row(
               children: [
+
                 SizedBox(width: 8),
                 StyledButton(
                   onPressed: () async {
@@ -310,98 +317,179 @@ class GuestBook2 extends StatefulWidget {
 
 class _GuestBookState2 extends State<GuestBook2> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
+  late List<GDPData> _chartData;
+  get trainingModel => trainingModel;
+
+  @override
+  void initState() {
+    _chartData = getChartData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      //padding: const EdgeInsets.all(8),
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Row(
-              children: [
-                SizedBox(width: 8),
+
+      children: <Widget>[
+        Container(
+          height: 10,
+          child:
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: _formKey,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 8),
+                    ],
+                  ),
+                ),
+              ),
+        ),
+
+        Container(
+          height: 300,
+          width: 1000,
+          child:
+          Scaffold(
+            body: SfCartesianChart(
+              series: <ChartSeries>[
+                ColumnSeries<GDPData, String>(
+                    dataSource: _chartData,
+                    xValueMapper: (GDPData gdp,_)=>gdp.date,
+                    yValueMapper: (GDPData gdp,_)=>gdp.gdp)
               ],
-            ),
+              primaryXAxis: CategoryAxis(),),
           ),
         ),
-        Table(
-            border: TableBorder.all(width: 0.8, color: Colors.grey),
-            children: [
+        /**
+        Container(
+          height: 300,
+          child:
+              Table(
+                  border: TableBorder.all(width: 0.8, color: Colors.grey),
+                  children: [
+                    TableRow(children:[
+                        TableCell(child: Center(child: Text('Energia\n  [kcal]'))),
+                        //TableCell(child: Center(child: Text('Tempo'))),
+                        TableCell(child: Center(child: Text('Prędkość\n   [km/h]'))),
+                        TableCell(child: Center(child: Text('Dystans\n     [m]'))),
+                        TableCell(child: Center(child: Text('Czas\n   [s]'))),
+                        TableCell(child: Center(child: Text('Data'))),
+                      ]
+                    ),
+                    for (var message in widget.messages)
+                      if (message.name == FirebaseAuth.instance.currentUser!.displayName)
+                        TableRow(children: [
+                            TableCell(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                  //new Text(message.name),
+                                    new Text(message.kcal),
+                                  ]
+                                )
+                            ),
+                           /**
+                            TableCell(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                  //new Text(message.name),
+                                  new Text(message.pace),
+                                  ]
+                                )
+                              ),
+                          */
+                          TableCell(
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      //new Text(message.name),
+                                      new Text(message.speed),
+                                    ]
+                                )
+                            ),
+                            TableCell(
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      //new Text(message.name),
+                                      new Text(message.distance),
+                                    ]
+                                )
+                            ),
+                            TableCell(
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      //new Text(message.name),
+                                      new Text(message.time),
+                                    ]
+                                )
+                            ),
+                            TableCell(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                  //new Text(message.name),
+                                  new Text((message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19)))),
+                                  ]
+                                )
+                              )]
+                    )],
+              ),
+        ),
+        */
+
+        Container(
+          height: 5000,
+          width:1000,
+          child:
+          DataTable(
+            dataRowHeight: 16,
+            columnSpacing: 22,
+            columns: [
+              DataColumn(label: Expanded(child: Text('Energia\n[kcal]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Prędkość\n[m/s]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Dystans\n[m]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Czas\n[s]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Data\n[d/m]',textAlign: TextAlign.center))),
+            ],
+            rows: [
               for (var message in widget.messages)
                 if (message.name == FirebaseAuth.instance.currentUser!.displayName)
-                  TableRow(children: [
-                      /**
-                      TableCell(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            new Text(message.name),
-                            //new Text(message.message),
-                          ],
-                        ),
-                      ),
-                      */
-                      TableCell(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                            //new Text(message.name),
-                              new Text(message.kcal),
-                            ]
-                          )
-                      ),
-                      TableCell(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                            //new Text(message.name),
-                            new Text(message.pace),
-                            ]
-                          )
-                        ),
-                      TableCell(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                //new Text(message.name),
-                                new Text(message.speed),
-                              ]
-                          )
-                      ),
-                      TableCell(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                //new Text(message.name),
-                                new Text(message.distance),
-                              ]
-                          )
-                      ),
-                      TableCell(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                //new Text(message.name),
-                                new Text(message.time),
-                              ]
-                          )
-                      ),
-                      TableCell(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                            //new Text(message.name),
-                            new Text(message.date),
-                            ]
-                          )
-                        )]
-              )],
-        )]
+                      DataRow(cells:[
+                          DataCell(Text(message.kcal,textAlign: TextAlign.center), onTap:(){Navigator.push(context, MaterialPageRoute(builder: (context) => (SettingsRoute())),);}),
+                          DataCell(Text(message.speed,textAlign: TextAlign.center)),
+                          DataCell(Text(message.distance,textAlign: TextAlign.center)),
+                          DataCell(Text(message.time,textAlign: TextAlign.center)),
+                          DataCell(Text((message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19))),textAlign: TextAlign.center)),
+              ],)
+            ],
+          ),
+        ),
+
+        ],
     );
   }
+  List<GDPData> getChartData(){
+    final List<GDPData> chartData = [];
+    for (var message in widget.messages) {
+      if (message.name == FirebaseAuth.instance.currentUser!.displayName)
+        chartData.add(GDPData(double.parse(message.distance),
+            (message.date.substring(10, max(0, message.date.length - 10)) +'\n'+ message.date.substring(8, max(0, message.date.length - 16)) + '/' + message.date.substring(5, max(0, message.date.length - 19)))));
+    }
+    return chartData;
+  }
+}
+
+class GDPData {
+  GDPData(this.gdp, this.date);
+  final double gdp;
+  final String date;
 }
 
 

@@ -128,9 +128,9 @@ class TrainingViewState extends State<TrainingView> {
 
           speed = num.parse(location.speed.toStringAsFixed(3));
 
-          latitude = num.parse(location.latitude.toStringAsFixed(6));
+          latitude = num.parse(location.latitude.toStringAsFixed(4));
 
-          longitude = num.parse(location.longitude.toStringAsFixed(6));
+          longitude = num.parse(location.longitude.toStringAsFixed(4));
 
           LatLng currentLocation = LatLng(latitude, longitude);
           listOfLocations.add(currentLocation);
@@ -436,6 +436,7 @@ class TrainingViewState extends State<TrainingView> {
 
           children: [
             Padding(padding: EdgeInsets.only(top: 10.0)),
+
 
             Text(
               getNiceTimeDisplay(seconds),
