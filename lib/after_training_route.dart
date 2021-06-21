@@ -51,10 +51,10 @@ class AfterTraining extends StatelessWidget {
     List<String> trainingList = [
       endDate.toString(),
       totalTime.toString(),
-      totalDistance.toString(),
-      avgSpeed.toString(),
-      avgPace.toString(),
-      kilocalories.toString(),
+      totalDistance.toStringAsFixed(2),
+      avgSpeed.toStringAsFixed(2),
+      avgPace.toStringAsFixed(2),
+      kilocalories.toStringAsFixed(2),
     ];
 
     return trainingList;
