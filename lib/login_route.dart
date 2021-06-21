@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
       //Image.asset('assets/running-facts-crazy.png'),
       SizedBox(height: 8),
         IconAndDetail(Icons.calendar_today, formattedDate),
-        IconAndDetail(Icons.location_city, 'Wrocław'),
+        //IconAndDetail(Icons.location_city, 'Wrocław'),
         Consumer<ApplicationState>(
           builder: (context, appState, _) => Authentication(
             loginState: appState.loginState,
@@ -452,11 +452,11 @@ class _GuestBookState2 extends State<GuestBook2> {
             dataRowHeight: 16,
             columnSpacing: 22,
             columns: [
-              DataColumn(label: Expanded(child: Text('Energia',textAlign: TextAlign.center))),
-              DataColumn(label: Expanded(child: Text('Prędkość',textAlign: TextAlign.center))),
-              DataColumn(label: Expanded(child: Text('Dystans',textAlign: TextAlign.center))),
-              DataColumn(label: Expanded(child: Text('Czas',textAlign: TextAlign.center))),
-              DataColumn(label: Expanded(child: Text('Data',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Energia\n[kcal]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Prędkość\n[m/s]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Dystans\n[m]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Czas\n[s]',textAlign: TextAlign.center))),
+              DataColumn(label: Expanded(child: Text('Data\n[d/m]',textAlign: TextAlign.center))),
             ],
             rows: [
               for (var message in widget.messages)
