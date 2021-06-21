@@ -159,8 +159,8 @@ class TrainingViewState extends State<TrainingView> {
       });
 
       streamSubscription.onDone(() => setState(() {
-            trackLocation = false;
-          }));
+        trackLocation = false;
+      }));
     }
   }
 
@@ -223,8 +223,8 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  getNiceDistanceDisplay(double distance) {
-    if (distance != Null) {
+  String getNiceDistanceDisplay(distance) {
+    if (distance != null) {
       if (metricDistanse) {
         if (distance < 1000) {
           return (distance).toStringAsFixed(1) + " m";
@@ -239,7 +239,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  getNiceSpeedDisplay(double speed) {
+  String getNiceSpeedDisplay(speed) {
     if (speed != null) {
       if (metricSpeed) {
         return ((speed * 3.6).toStringAsFixed(1)) + " km/h";
@@ -251,9 +251,14 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  String getNiceCaloriesDisplay(int seconds, double distance, double speed) {
-    calories = calories + calculateCalories(seconds, distance, speed);
-    return calories.toStringAsFixed(2) + " kcal";
+  String getNiceCaloriesDisplay(int seconds, distance, speed) {
+    if (speed != null && distance != null) {
+      calories = calories + calculateCalories(seconds, distance, speed);
+      return calories.toStringAsFixed(2) + " kcal";
+    }
+    else{
+      return "0.0";
+    }
   }
 
 // METODY PRZYCISKOW
@@ -430,61 +435,66 @@ class TrainingViewState extends State<TrainingView> {
       ),
       body: Center(
           child: Container(
-        alignment: Alignment.center,
-        child: ListView(
-          // mainAxisAlignment: MainAxisAlignment.center,
+            alignment: Alignment.center,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.center,
 
-          children: [
-            Padding(padding: EdgeInsets.only(top: 10.0)),
+              children: [
+                Padding(padding: EdgeInsets.only(top: 10.0)),
 
 
-            Text(
-              getNiceTimeDisplay(seconds),
-              style: TextStyle(fontSize: 50),
-              textAlign: TextAlign.center,
+                Text(
+                  getNiceTimeDisplay(seconds),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+
+
+
+                Text(
+                  getNiceDistanceDisplay(distance),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+
+
+
+                Text(
+                  getNiceSpeedDisplay(speed),
+                  style: TextStyle(fontSize: 50, color: colorOfSpeed),
+                  textAlign: TextAlign.center,
+                ),
+
+
+
+                Text(
+                  getNiceCaloriesDisplay(seconds, distance, speed),
+                  style: TextStyle(fontSize: 50),
+                  textAlign: TextAlign.center,
+                ),
+
+
+
+                TextButton(
+                  onPressed: buttonPressed,
+                  onLongPress: clearDistance,
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(fontSize: 50, color: colorOfButton),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    endTraining(context);
+                  },
+                  child: Text(
+                    "zakończ",
+                    style: TextStyle(fontSize: 50, color: Colors.black),
+                  ),
+                ),
+              ],
             ),
-
-
-            Text(
-              getNiceDistanceDisplay(distance),
-              style: TextStyle(fontSize: 50),
-              textAlign: TextAlign.center,
-            ),
-
-
-            Text(
-              getNiceSpeedDisplay(speed),
-              style: TextStyle(fontSize: 50, color: colorOfSpeed),
-              textAlign: TextAlign.center,
-            ),
-
-
-            Text(
-              getNiceCaloriesDisplay(seconds, distance, speed),
-              style: TextStyle(fontSize: 50),
-              textAlign: TextAlign.center,
-            ),
-
-            TextButton(
-              onPressed: buttonPressed,
-              onLongPress: clearDistance,
-              child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 50, color: colorOfButton),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                endTraining(context);
-              },
-              child: Text(
-                "zakończ",
-                style: TextStyle(fontSize: 50, color: Colors.black),
-              ),
-            ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 }
