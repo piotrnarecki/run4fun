@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
       //Image.asset('assets/running-facts-crazy.png'),
       SizedBox(height: 8),
         IconAndDetail(Icons.calendar_today, formattedDate),
-        IconAndDetail(Icons.verified_user, FirebaseAuth.instance.currentUser!.displayName!),
+        // IconAndDetail(Icons.verified_user,), //FirebaseAuth.instance.currentUser!.displayName!
         Consumer<ApplicationState>(
           builder: (context, appState, _) => Authentication(
             loginState: appState.loginState,
