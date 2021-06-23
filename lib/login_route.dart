@@ -8,21 +8,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:run4fun/trainingModel.dart';
-import 'package:run4fun/training_on_map_route.dart';
-//import 'package:run4fun/main.dart';
-
 import 'history_route.dart';
 import 'widgets.dart';
 import 'authentication.dart';
-
 import 'package:intl/intl.dart';
-
 import 'training_route.dart';
 import 'settings_route.dart';
-
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+// Widżet będący głównym ekranem, który pojawia się podczas rozruchu aplikacji
 class LoginRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -44,16 +38,23 @@ class LoginRoute extends StatelessWidget {
   }
 }
 
+// Klasa HomePage oraz _HomePageState zawierają w sobie funkcjonalność dotyczącą
+// wyświetlania informacji na głównym ekranie, logowania na zarejestrowane konto
+// oraz logowania przy użyciu konta Google
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  // Zmienne wykorzystywane podczas logowania przy użyciu konta Google.
+  // Do obsługi konta Google użyto biblioteki "google_sign_in".
   bool _isLoggedIn = false;
   late GoogleSignInAccount _userObj;
   GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  // Metoda build zastępuje poddrzewo poniżej widżetu _HomePageState widżetem
+  // zwróconym przez tę metodę, aktualizując istniejące poddrzewo lub usuwając
+  // poddrzewo i powiększając nowe poddrzewo.
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
@@ -65,12 +66,15 @@ class _HomePageState extends State<HomePage> {
       body: ListView(
           children: <Widget>[
 
-      //Image.asset('assets/running-facts-crazy.png'),
         SizedBox(height: 8),
         IconAndDetail(Icons.calendar_today, formattedDate),
-
+        // Tworzenie wystąpienia widgetu Authentication i umieszczenie go w
+        // widgecie Consumer. Widżet Consumer to typowy sposób, w jaki pakiet
+        // provider może zostać użyty do odbudowania części drzewa
+        // gdy zmienia się stan aplikacji
         Consumer<ApplicationState>(
           builder: (context, appState, _) => Authentication(
+            // Zmienne wykorzystywane podczas logowania na konto.
             loginState: appState.loginState,
             email: appState.email,
             startLoginFlow: appState.startLoginFlow,
@@ -88,10 +92,13 @@ class _HomePageState extends State<HomePage> {
           endIndent: 8,
           color: Colors.grey,
         ),
+            // Klasa Container zawierająca funkcjonalność dotyczącą konta Google.
             Container(
               child: _isLoggedIn
                   ? Column(
                 children: [
+                  // Wyświetlanie zdjęcia profilowego konta Google,
+                  // imienia użytkownika oraz jego adresu email
                   Image.network(_userObj.photoUrl!),
                   Text(_userObj.displayName!),
                   Text(_userObj.email),
@@ -105,13 +112,9 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: Text("Logout")
                   ),
-                  //   child:
-                  //   Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => (TrainingRoute())),
-                  // );
                 ],
               )
+              // Klasa Center z przyciskiem logowania do konta Google
                   : Center(
                 child: ElevatedButton(
                   child: Text("Login with Google"),
@@ -121,6 +124,9 @@ class _HomePageState extends State<HomePage> {
                         _isLoggedIn = true;
                         _userObj = userData!;
                       });
+                      // Podczas wciśnięcia przycisku "Login with Google"
+                      // funkcja push należąca do klasy Navigator, przenosi
+                      // użytkownika do okna z treningiem
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Training()),
@@ -133,7 +139,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
+        // Sprawdzanie czy użytkownik jest zalogowany, jeśli tak -
+        // przeniesienie do okna z treningiem
         Consumer<ApplicationState>(
             builder: (context, appState, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,7 +161,11 @@ class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
-
+  // klasa Future służy do reprezentowania potencjalnej wartości lub błędu,
+  // który będzie dostępny w pewnym momencie w przyszłości. W tym przypadku są to
+  // zmienne należące do klasy GuestBookMessage, których wartości są wysyłane
+  // do bazy danych w aplikacji Firebase (timestampy). Następuje tutaj
+  // zakolejkowana subksrypcja dotycząca kolekcji dokumentów, gdy użytkownik się zaloguje.
   Future<void> init() async {
     await Firebase.initializeApp();
     FirebaseAuth.instance.userChanges().listen((user) {
@@ -192,7 +203,7 @@ class ApplicationState extends ChangeNotifier {
       notifyListeners();
     });
   }
-
+  // W sekcji ApplicationState są zdefiniowane stany i gettery.
   ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
   ApplicationLoginState get loginState => _loginState;
 
@@ -203,11 +214,13 @@ class ApplicationState extends ChangeNotifier {
   List<GuestBookMessage> _guestBookMessages = [];
   List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
 
+  // Funkcja zapoczątkowująca proces logowania się
   void startLoginFlow() {
     _loginState = ApplicationLoginState.emailAddress;
     notifyListeners();
   }
 
+  // Funkcja sprawdzająca poprawność podane adresu email przez użytkownika.
   void verifyEmail(
       String email,
       void Function(FirebaseAuthException e) errorCallback,
@@ -227,6 +240,7 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  // Funkcja wywoływana podczas logowania z użyciem adresu mailowego i hasła.
   void signInWithEmailAndPassword(
       String email,
       String password,
@@ -242,11 +256,13 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  // Funkcja wywoływana podczas anulowania procesu rejestracji.
   void cancelRegistration() {
     _loginState = ApplicationLoginState.emailAddress;
     notifyListeners();
   }
 
+  // Funkcja wywoływana podczas procesu rejestracji nowego konta.
   void registerAccount(String email, String displayName, String password,
       void Function(FirebaseAuthException e) errorCallback) async {
     try {
@@ -259,6 +275,7 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  // Funkcja, która jest używana w czasie kiedy użytkownik wylogowuje się z konta.
   void signOut() {
     FirebaseAuth.instance.signOut();
   }
@@ -277,12 +294,16 @@ class ApplicationState extends ChangeNotifier {
       'text': message,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'name': FirebaseAuth.instance.currentUser!.displayName,
+      // FirebaseAuth.instance.currentUser.uid to odniesienie do
+      // automatycznie wygenerowanego unikalnego identyfikatora, który
+      // widżet Authentication nadaje wszystkim zalogowanym użytkownikom.
       'userId': FirebaseAuth.instance.currentUser!.uid,
     });
   }
 }
 
-//Klasa tworząca obiekt z danymi dotyczącymi parametrów biegu i użytkownika wysyłany do bazy danych
+//Klasa tworząca obiekt z danymi dotyczącymi parametrów biegu i użytkownika
+// wysyłany do bazy danych
 class GuestBookMessage {
   GuestBookMessage({required this.name, required this.message, required this.kcal, required this.pace, required this.speed, required this.distance, required this.time, required this.date});
   final String name;
@@ -312,6 +333,13 @@ class GuestBook extends StatefulWidget {
   _GuestBookState createState() => _GuestBookState();
 }
 
+// Zawartość metody build opakowana jest widżetem Column. Tworzona jest tutj
+// instancja widżetu Form, aby interfejs użytkownika mógł sprawdzić,
+// czy wiadomość rzeczywiście zawiera jakąś treść, i pokazać użytkownikowi
+// komunikat o błędzie, jeśli go nie ma. Sposób sprawdzania poprawności formularza
+// obejmuje dostęp do stanu formularza "za" formularzem, do tego celu użyto
+// klasy GlobalKey, następnie na końcu elementów potomnych widżetu Column dodawany jest
+// widżet Row z przyciskiem wysyłającym zawartość formularza do bazy danych.
 class _GuestBookState extends State<GuestBook> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
   final _controller = TextEditingController();
@@ -369,6 +397,8 @@ class GuestBook2 extends StatefulWidget {
   _GuestBookState2 createState() => _GuestBookState2();
 }
 
+// W klasie GuestBookState2 zawarte są wszystkie widżety dotyczące wyświetlania
+// danych dotyczących historii treningów.
 class _GuestBookState2 extends State<GuestBook2> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_GuestBookState');
   late List<GDPData> _chartData;
@@ -400,6 +430,8 @@ class _GuestBookState2 extends State<GuestBook2> {
             ),
           ),
         ),
+
+        // Widżet Container z zawartością służącą do rysowania wykresu.
         Container(
           height: 300,
           width: 1000,
@@ -421,6 +453,7 @@ class _GuestBookState2 extends State<GuestBook2> {
           height: 5000,
           width:1000,
           child:
+          // Widżet DataTable zawiera zmienne dotyczące parametrów treningu.
           DataTable(
             dataRowHeight: 16,
             columnSpacing: 22,

@@ -9,6 +9,9 @@ enum ApplicationLoginState {
   loggedIn,
 }
 
+// Klasa Authentication zawiera implementację uwierzytelniania
+// z zestawem widżetów umożliwiającym logowanie użytkownika oraz
+// uwierzytelnianie oparte na poczcie e-mail Firebase.
 class Authentication extends StatelessWidget {
   const Authentication({
     required this.loginState,
@@ -21,6 +24,8 @@ class Authentication extends StatelessWidget {
     required this.signOut,
   });
 
+  // Zmienne używane podczas logowania oraz są tutaj zdefiniowane
+  // funkcje do obsługi procesu logowania.
   final ApplicationLoginState loginState;
   final String? email;
   final void Function() startLoginFlow;
@@ -41,7 +46,10 @@ class Authentication extends StatelessWidget {
     void Function(Exception e) error,
   ) registerAccount;
   final void Function() signOut;
-  
+
+  // Funkcja build, której zawartość w zależności od zmiennej loginState, zwraca
+  // widżet z informacją odnośnie logowania i rejestracji (EmailForm, PasswordForm,
+  // Register Form).
   @override
   Widget build(BuildContext context) {
     switch (loginState) {
@@ -57,15 +65,6 @@ class Authentication extends StatelessWidget {
                 child: Text('LOGOWANIE'),
               ),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 24, bottom: 8),
-            //   child: StyledButton(
-            //     onPressed: () {
-            //       startLoginFlow();
-            //     },
-            //     child: Text('Konto Google'),
-            //   ),
-            // ),
           ],
         );
       case ApplicationLoginState.emailAddress:
@@ -122,6 +121,7 @@ class Authentication extends StatelessWidget {
     }
   }
 
+  // Funkcja do służąca do obsługi pojawiajcych się błędów.
   void _showErrorDialog(BuildContext context, String title, Exception e) {
     showDialog<void>(
       context: context,
@@ -158,6 +158,8 @@ class Authentication extends StatelessWidget {
   }
 }
 
+// Klasa, w ktorej zwracane są elementy służące do wyświetlenia użytkownikowi
+// informacji o logowaniu.
 class EmailForm extends StatefulWidget {
   EmailForm({required this.callback});
   final void Function(String email) callback;
@@ -168,7 +170,6 @@ class EmailForm extends StatefulWidget {
 class _EmailFormState extends State<EmailForm> {
   final _formKey = GlobalKey<FormState>(debugLabel: '_EmailFormState');
   final _controller = TextEditingController();
-  // final _passwordReset = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -227,22 +228,6 @@ class _EmailFormState extends State<EmailForm> {
                         ),
                       ],
                     ),
-                    //   Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       vertical: 16.0, horizontal: 30),
-                    //   child: StyledButton(
-                    //     onPressed: () {
-                    //       Navigator.pushNamed(
-                    //         context,
-                    //         ForgotPassword.id,
-                    //       );
-                    //     },
-                    //   child: Text(
-                    //     'Zapomniałeś hasło?',
-                    //
-                    //   ),
-                    // ),
-                    //   ),
                   ],
                 ),
 
@@ -256,7 +241,8 @@ class _EmailFormState extends State<EmailForm> {
 }
 
 
-
+// Klasa, w ktorej zwracane są elementy służące do wyświetlenia użytkownikowi
+// informacji o rejestracji nowego konta.
 class RegisterForm extends StatefulWidget {
   RegisterForm({
     required this.registerAccount,
@@ -375,6 +361,9 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 }
+
+// Klasa, która zapewna funkcjonalność sprawdzania poprawności podanego hasła.
+// Podobnie jak w pliku login_route do tego celu użyto klasy GlobalKey.
 
 class PasswordForm extends StatefulWidget {
   PasswordForm({

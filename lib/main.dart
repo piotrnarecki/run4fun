@@ -5,13 +5,12 @@ import 'package:run4fun/login_route.dart';
 import 'settings_route.dart';
 import 'training_route.dart';
 
+// Funkcja runApp() pobiera dany widżet i czyni go głównym drzewem widżetów.
+// W tym przykładzie drzewo widżetów składa się z trzech widżetów,
+// widżetu ChangeNotifierProvider, który udostępnia API powiadomień o zmianach,
+// jego elementu podrzędnego, widżetu MaterialApp związanego z układem widżetów
+// oraz LoginRoute należącego do tablicy routingu.
 void main(){
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-  // tutaj metoda sprawdzająca czy użytkownik jest zalogowany
-
-  // metoda wyswietlanjaca imię i statystki użytkownika
-
   runApp(
       ChangeNotifierProvider(
           create: (context) => ApplicationState(),
