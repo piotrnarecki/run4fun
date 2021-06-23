@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:run4fun/widgets.dart';
 import 'after_training_route.dart';
@@ -8,10 +7,9 @@ import 'dart:async';
 import 'dart:core';
 import 'trainingModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'settings_route.dart';
 import 'login_route.dart';
-// W TEJ KLASIE BEDZIE TRENING
 
+// ta klasa odpowiedzialna za rejestrownie treningu, wyswietlanie przebiegnietego dystansu,predkosci, spalonych kalori i czasu treningu
 class TrainingRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -19,17 +17,6 @@ class TrainingRoute extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Location Example',
       theme: ThemeData.light(),
-      // theme: ThemeData(
-      //   buttonTheme: Theme.of(context).buttonTheme.copyWith(
-      //     highlightColor: Colors.deepPurple,
-      //   ),
-      //   primarySwatch: Colors.orange,
-      //   textTheme: GoogleFonts.robotoTextTheme(
-      //     Theme.of(context).textTheme,
-      //   ),
-      //   visualDensity: VisualDensity.adaptivePlatformDensity,
-      // ),
-
       home: TrainingView(),
     );
   }
@@ -41,89 +28,78 @@ class TrainingView extends StatefulWidget {
 }
 
 class TrainingViewState extends State<TrainingView> {
-  bool metricDistanse = true;
+  bool metricDistanse =
+      true; // czy odleglosc w jednostach metrycznych czy imperialnych
+  var distanceUnits = "km"; // domyslna jednostka odleglosci
+  bool metricSpeed =
+      true; // czy predkosc w jednostach metrycznych czy imperialnych
+  var speedUnits = "km/h"; // domyslna jednostka predkosci
 
-  var distanceUnits = "km";
+  var height; // wzrost biegacza [cm]
+  var weight; // masa biegacza [kg]
 
-  bool metricSpeed = true;
+  var endDate; // data zakonczenia treningu
 
-  var speedUnits = "km/h";
-
-  var height;
-  var weight;
-
-  var endDate;
-
-  var totalDistance;
-  var totalTime;
-  var totalCalories;
+  var totalDistance; // dystans calkowity treningu [m]
+  var totalTime; // czas calkowity treningu [s]
+  var totalCalories; // kalorie spalone podczas treningu [kcal]
   var calories = 0.0;
 
-  var isRunning;
+  var isRunning; // zmienna sprawdzajca czy trening jest rejestrowany
 
-  var buttonText;
+  var latitude; // aktualna szerokosc geograficzna biegacza
+  var longitude; // aktualna dlugosc geograficzna biegacza
+  var startLatitude; //  szerokosc geograficzna do wyliczania odleglosci
+  var startLongitude; //  dlugosc geograficzna do wyliczania odleglosci
+  var endLatitude; //  szerokosc geograficzna do wyliczania odleglosci
+  var endLongitude; //  dlugosc geograficzna do wyliczania odleglosci
+  List<LatLng> listOfLocations = []; // lista lokalizacji podczas treningu
+  var positions = null; // lista pozycji odczytywanych z GPS
+  late StreamSubscription<Position>
+      streamSubscription; // strumien dancyh o lokalizacji
+  bool trackLocation =
+      false; // zmienna sprawdzajaca czy rejestrowana jest lokalizacja
 
-  var latitude;
-  var longitude;
-
-  var startLatitude;
-  var startLongitude;
-
-  var endLatitude;
-  var endLongitude;
-
-  List<LatLng> listOfLocations = [];
-
-  var distance = 0.0;
-  var minSpeed = 0.2; // 0.5
-  var speed;
-
+  var distance = 0.0; // chwilowa odleglosc [m]
+  var minSpeed =
+      0.2; // predkosc progowa powyzej ktorej ruch uznawany jest za bieg [m/s]
+  var speed; // predkosc chwilowa [m/s]
   var listSize = 0;
-  List<double> listOfSpeed = [];
+  List<double> listOfSpeed = []; // lista predkosci chwilowych
 
-  var colorOfSpeed = Colors.black;
-  var colorOfButton = Colors.black;
+  var colorOfSpeed = Colors.black; // kolor tekstu wyswietlajacego predkosc
+  var colorOfButton = Colors.black; // kolor tekstu przycisku start/stop
+  var buttonText; // tekst przycisku start/stop
 
-  var positions = null;
-  late StreamSubscription<Position> streamSubscription;
-  bool trackLocation = false;
-
+  // metoda wywolujaca sie przy tworzeniu route'a
   @override
   initState() {
     super.initState();
     checkGps();
-
     getSharedPreferences();
-
     trackLocation = false;
     positions = null;
-
     isRunning = false;
-    // speed=0.0;
-
     buttonText = "Start";
-
     listOfLocations.clear();
   }
 
+// metoda sprawdzajaca w jakich jednostkach maja byc wyswietlanie
   Future<void> getSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-
     metricDistanse = prefs.getBool('distance_settings') ?? true;
     metricSpeed = prefs.getBool('speed_settings') ?? true;
     height = prefs.getDouble('height') ?? 175;
     weight = prefs.getDouble('weight') ?? 70;
   }
 
-  // METODY LOKALIZACJI
-
+// METODY LOKALIZACJI
+// metoda rejestrujaca lokalizacje i predkosc biegacza
   startLocations() {
     if (trackLocation == false) {
       setState(() => trackLocation = true);
-
       streamSubscription = Geolocator.getPositionStream().listen((result) {
         final location = result;
-
         setState(() {
           positions = location;
 
@@ -141,7 +117,6 @@ class TrainingViewState extends State<TrainingView> {
           var length = listOfLocations.length;
 
           if (listSize > 2 && speed > minSpeed) {
-            // zmienic min speed
             colorOfSpeed = Colors.black;
 
             listOfSpeed.add(speed);
@@ -165,6 +140,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
+// metoda wstrzymujaca rejestracje lokalizacji i predkosci biegacza
   stopLocations() {
     if (trackLocation == true) {
       streamSubscription.cancel();
@@ -172,6 +148,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
+// metoda sprawzajaca czy lokalizacja jest dostepna
   checkGps() async {
     final result = await Geolocator.isLocationServiceEnabled();
     if (result == true) {
@@ -181,49 +158,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
-  double calculateDistanse(List<LatLng> listOfLocations) {
-    var length = listOfLocations.length;
-
-    startLatitude = listOfLocations[length - 2].latitude;
-
-    startLongitude = listOfLocations[length - 2].longitude;
-
-    endLatitude = listOfLocations[length - 1].latitude;
-    endLongitude = listOfLocations[length - 1].longitude;
-
-    var distance = Geolocator.distanceBetween(
-        startLatitude, startLongitude, endLatitude, endLongitude);
-
-    distance = double.parse(distance.toStringAsFixed(3));
-
-    return distance;
-  }
-
-  clearDistance() {
-    setState(() {
-      distance = 0;
-      listOfLocations.clear();
-    });
-  }
-
-  double calculateCalories(int time, double distance, double speed) {
-    // spalone kilokalorie
-    // https://golf.procon.org/met-values-for-800-activities/
-    // Kcal ~= METS * bodyMassKg * timePerformingHours
-
-    if (weight != null && speed != null && seconds != null) {
-      double mets = 1.6 * speed; // dla biegania
-
-      double kilocalories = mets * weight * (seconds / 3600) / 1000;
-
-      // double kilocalories = speed * weight * totalTime;
-
-      return kilocalories;
-    } else {
-      return 0.0;
-    }
-  }
-
+// metoda, ktora tworzy Stringa z odlegloscia wg. podanych jednostek
   String getNiceDistanceDisplay(distance) {
     if (distance != null) {
       if (metricDistanse) {
@@ -240,6 +175,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
+// metoda, ktora tworzy Stringa z predkoscia wg. podanych jednostek
   String getNiceSpeedDisplay(speed) {
     if (speed != null) {
       if (metricSpeed) {
@@ -252,6 +188,7 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
+// metoda, ktora tworzy Stringa ze spalonymi kaloriami
   String getNiceCaloriesDisplay(int seconds, distance, speed) {
     if (speed != null && distance != null) {
       calories = calories + calculateCalories(seconds, distance, speed);
@@ -263,6 +200,7 @@ class TrainingViewState extends State<TrainingView> {
 
 // METODY PRZYCISKOW
 
+  //metoda obslugujaca przycisk start/stop
   buttonPressed() {
     getSharedPreferences();
     if (isRunning == true) {
@@ -282,12 +220,14 @@ class TrainingViewState extends State<TrainingView> {
     }
   }
 
+// metoda rozpoczecia trening
   startTraining() {
     _startTimer();
     trackLocation = false;
     startLocations();
   }
 
+  // metoda wstrzymania trening
   stopTraining() {
     getSharedPreferences();
     _stopTimer();
@@ -295,55 +235,83 @@ class TrainingViewState extends State<TrainingView> {
     stopLocations();
   }
 
+// metoda zakonczenia treninigu
   endTraining(context) {
     stopTraining();
 
     endDate = DateTime.now();
 
     var totalDistance = distance;
-    // var totalTime = double.parse(seconds.toString());
     var totalTime = seconds;
-
-    // var trainingList = [
-    //   endDate.toString(),
-    //   totalTime.toString(),
-    //   totalDistance.toString(),
-    // ];
 
     var avgSpeed = calculateAvgSpeed(listOfSpeed);
 
     var avgPace = calculateAvgPace(totalTime, totalDistance);
 
-    // var kilocalories = 1000.0;
-
     if (listOfLocations.length > 0) {
       var trainingModel = TrainingModel(totalDistance, totalTime, endDate,
-          avgSpeed, avgPace, calories, listOfLocations); // srednia predkosc
+          avgSpeed, avgPace, calories, listOfLocations);
 
       Navigator.push(
         context,
-        // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
         MaterialPageRoute(builder: (context) => (AfterTraining(trainingModel))),
       );
     } else {
       Navigator.push(
         context,
-        // MaterialPageRoute(builder: (context) => (AfterTraining(trainingList))),
         MaterialPageRoute(builder: (context) => (LoginRoute())),
       );
     }
-    // var trainingList = [
-    //   latitude.toString(),
-    //   longitude.toString(),
-    //   distance.toString(),
-    //   speed.toString(),
-    // ];
-
-// tutaj dodaj do bazy
   }
 
 // METODY OBLICZENIOWE
 
+  // metoda wyliczajaca odleglosc pomiedzy lokalizacjami na podstawie ich koordynatow
+  double calculateDistanse(List<LatLng> listOfLocations) {
+    var length = listOfLocations.length;
+
+    startLatitude = listOfLocations[length - 2].latitude;
+
+    startLongitude = listOfLocations[length - 2].longitude;
+
+    endLatitude = listOfLocations[length - 1].latitude;
+    endLongitude = listOfLocations[length - 1].longitude;
+
+    var distance = Geolocator.distanceBetween(
+        startLatitude, startLongitude, endLatitude, endLongitude);
+
+    distance = double.parse(distance.toStringAsFixed(3));
+
+    return distance;
+  }
+
+// metoda zerujaca odleglosc
+  clearDistance() {
+    setState(() {
+      distance = 0;
+      listOfLocations.clear();
+    });
+  }
+
+// metoda wyliczajaca kalorie spalone w czasie treningu, przyjmuje mase i predkosc biegacza oraz czas treningu
+
+  double calculateCalories(int time, double distance, double speed) {
+    // spalone kilokalorie
+    // https://golf.procon.org/met-values-for-800-activities/
+    // Kcal ~= METS * bodyMassKg * timePerformingHours
+
+    if (weight != null && speed != null && seconds != null) {
+      double mets = 1.6 * speed; // dla biegania
+
+      double kilocalories = mets * weight * (seconds / 3600) / 1000;
+
+      return kilocalories;
+    } else {
+      return 0.0;
+    }
+  }
+
+  // metoda wyliczajaca srednia predkosc
   double calculateAvgSpeed(List listOfSpeed) {
     var avgSpeed;
     var sumOfSpeed = 0.0;
@@ -360,6 +328,7 @@ class TrainingViewState extends State<TrainingView> {
     return avgSpeed;
   }
 
+  // metoda wyliczajaca srednie tempo
   double calculateAvgPace(int totalTime, double totalDistance) {
     if (totalTime > 0 && totalDistance > 0) {
       var runningPace = double.parse(((totalTime / 60) / (totalDistance / 1000))
@@ -372,7 +341,7 @@ class TrainingViewState extends State<TrainingView> {
   }
 
 // METODY TIMERA
-
+// metoda, ktora tworzy Stringa z czasem treningu w formcie HH:MM:SS
   String getNiceTimeDisplay(int seconds) {
     int hours = (seconds / 3600).truncate();
     seconds = (seconds % 3600).truncate();
@@ -394,19 +363,17 @@ class TrainingViewState extends State<TrainingView> {
   int seconds = 0;
   late Timer myTimer;
 
+// metoda startujaca timer
   void _startTimer() {
     myTimer = new Timer.periodic(oneSec, (timer) {
-      getSharedPreferences(); // sprawdzic
+      getSharedPreferences();
       setState(() {
         seconds = seconds + 1;
-
-        // calories = calories + calculateCalories(seconds, distance, speed);
-
-        // calories = calories + 10;
       });
     });
   }
 
+// metoda zatrzymujaca timer
   void _stopTimer() {
     if (myTimer.isActive) {
       myTimer.cancel();
@@ -441,61 +408,37 @@ class TrainingViewState extends State<TrainingView> {
 
           children: [
             Padding(padding: EdgeInsets.only(top: 10.0)),
-
             Text(
               getNiceTimeDisplay(seconds),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
             Text(
               getNiceDistanceDisplay(distance),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
             Text(
               getNiceSpeedDisplay(speed),
               style: TextStyle(fontSize: 50, color: colorOfSpeed),
               textAlign: TextAlign.center,
             ),
-
             Text(
               getNiceCaloriesDisplay(seconds, distance, speed),
               style: TextStyle(fontSize: 50),
               textAlign: TextAlign.center,
             ),
-
             StyledButton(
               onPressed: buttonPressed,
               child: Text(buttonText,
                   style: TextStyle(fontSize: 30, color: colorOfButton)),
             ),
-
             StyledButton(
               onPressed: () {
                 endTraining(context);
               },
               child: Text('zakończ', style: TextStyle(fontSize: 30)),
             ),
-
-            // TextButton(
-            //   onPressed: buttonPressed,
-            //   onLongPress: clearDistance,
-            //   child: Text(
-            //     buttonText,
-            //     style: TextStyle(fontSize: 50, color: colorOfButton),
-            //   ),
-            // ),
-            // TextButton(
-            //   onPressed: () {
-            //     endTraining(context);
-            //   },
-            //   child: Text(
-            //     "zakończ",
-            //     style: TextStyle(fontSize: 50, color: Colors.black),
-            //   ),
-            // ),
           ],
         ),
       )),

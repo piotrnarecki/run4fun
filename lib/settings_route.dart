@@ -3,8 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:core';
 import 'dart:async';
 
-// W TEJ KLASIE BEDZA USTAWIANE TAKIE PARAMETRY UZYTKOWNIKA JAK MASA CZY WZROST (MASA POTRZEBNA DO WYLICZNENIA SPALONYCH KALORI)
-
+// klasa odpowiedzialna za zmiane ustawien wyswietlania odleglosci, predkosci masy ciala i wzrostu biegacza
 class SettingsRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -13,31 +12,14 @@ class SettingsRoute extends StatefulWidget {
 }
 
 class SettingsState extends State<SettingsRoute> {
-  bool metricDistanse = true;
-
+  bool metricDistanse = true; //czy odleglosc w jednostkach metrycznych
   var distanceUnits = " km";
-
-  bool metricSpeed = true;
-
+  bool metricSpeed = true; //czy predkosc w jednostkach metrycznych
   var speedUnits = " km/h";
+  double heightSliderValue = 175; //domyslna wartosc wzrostu
+  double weightSliderValue = 70; //domyslna wartosc masy
 
-  // bool metricWeight = true;
-  // var weightUnits = "kg";
-  //
-  // bool metricHeight = true;
-  // var heightUnits = "m, cm";
-
-
-  double heightSliderValue = 175;
-  double weightSliderValue = 70;
-
-
-  // var minWeight;
-  // var maxWeight;
-  //
-  // var minHeight;
-  // var maxHeight;
-
+  // metoda zmieniajaca jednostki odleglosci
   void changeDistanceSettings(bool metricDistanse) {
     if (metricDistanse == true) {
       distanceUnits = "km";
@@ -50,6 +32,7 @@ class SettingsState extends State<SettingsRoute> {
     });
   }
 
+  // metoda zmieniajaca jednostki predkosci
   void changeSpeedSettings(bool metricSpeed) {
     if (metricSpeed == true) {
       speedUnits = "km/h";
@@ -62,30 +45,7 @@ class SettingsState extends State<SettingsRoute> {
     });
   }
 
-  // void changeWeightSettings(bool metricWeight) {
-  //   if (metricWeight == true) {
-  //     weightUnits = "kg";
-  //   } else {
-  //     weightUnits = "lb";
-  //   }
-  //
-  //   setState(() {
-  //     weightUnits = weightUnits;
-  //   });
-  // }
-  //
-  // void changeHeightSettings(bool metricHeight) {
-  //   if (metricHeight == true) {
-  //     heightUnits = "m, cm";
-  //   } else {
-  //     heightUnits = "ft, inch";
-  //   }
-  //
-  //   setState(() {
-  //     heightUnits = heightUnits;
-  //   });
-  // }
-
+  // metoda wczytujaca zapisane jednostki
   Future<void> getSharedPreferences() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -95,11 +55,11 @@ class SettingsState extends State<SettingsRoute> {
     weightSliderValue = prefs.getDouble('weight') ?? 70;
   }
 
+  // metoda zapisujaca zmienione jednostki
   Future<void> saveSettings(bool metricDistanse, bool metricSpeed,
       double height, double weight) async {
     final prefs = await SharedPreferences.getInstance();
 
-// write
     prefs.setBool('speed_settings', metricSpeed);
     prefs.setBool('distance_settings', metricDistanse);
     prefs.setDouble('height', height);
@@ -130,7 +90,6 @@ class SettingsState extends State<SettingsRoute> {
                   });
                 },
                 secondary: const Icon(Icons.add_road),
-                // secondary: const Text("odległość "),
               ),
               SwitchListTile(
                 title: Text("$speedUnits"),
@@ -144,33 +103,7 @@ class SettingsState extends State<SettingsRoute> {
                   });
                 },
                 secondary: const Icon(Icons.speed),
-                // secondary: const Text("prędkość "),
               ),
-              // SwitchListTile(
-              //   title: Text("$weightUnits"),
-              //   value: metricWeight,
-              //   onChanged: (bool value) {
-              //     setState(() {
-              //       metricWeight = value;
-              //       changeWeightSettings(metricWeight);
-              //     });
-              //   },
-              //   secondary: const Icon(Icons.approval), // zmienic
-              //   // secondary: const Text("masa        "),
-              // ),
-              // SwitchListTile(
-              //   title: Text("$heightUnits"),
-              //   value: metricHeight,
-              //   onChanged: (bool value) {
-              //     setState(() {
-              //       metricHeight = value;
-              //       changeHeightSettings(metricHeight);
-              //     });
-              //   },
-              //   secondary: const Icon(Icons.accessibility),
-              //   // secondary: const Text("wzrost       "),
-              // ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -194,7 +127,6 @@ class SettingsState extends State<SettingsRoute> {
                       )),
                 ],
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -203,7 +135,6 @@ class SettingsState extends State<SettingsRoute> {
                       flex: 8,
                       child: Slider(
                         // masa w kg
-
                         value: weightSliderValue,
                         min: 30.0,
                         max: 180.0,
@@ -216,8 +147,7 @@ class SettingsState extends State<SettingsRoute> {
                                 heightSliderValue, weightSliderValue);
                           });
                         },
-                      )
-                  )
+                      ))
                 ],
               ),
             ],

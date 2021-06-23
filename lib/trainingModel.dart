@@ -1,22 +1,17 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+
+
+// klasa bedaca modelem treningu
 class TrainingModel {
-  double totalDistance;
-  int totalTime;
-  DateTime endDate;
+  double totalDistance; // odleglosc calkowita treningu [m]
+  int totalTime; // czas calkowity treningu [s]
+  DateTime endDate; // data zakonczenia treningu HH:MM DD:MM:YYYY
+  double avgSpeed; // srednia predkosc [m/s]
+  double avgPace; //srednie tempo [s/m]
+  double kilocalories;// spalone kalorie [kcal]
+  List<LatLng> listOfLocations; // lista koordynatow podczas treningu
 
-  double avgSpeed;
-  double avgPace;
-
-  double kilocalories;
-
-  List<LatLng> listOfLocations;
-
-  // List <LatLng> listOfLocations;
-
-  // Constructor, with syntactic sugar for assignment to members.
   TrainingModel(this.totalDistance, this.totalTime, this.endDate, this.avgSpeed,
-      this.avgPace, this.kilocalories,this.listOfLocations) {
-    // Initialization code goes here.
-  }
+      this.avgPace, this.kilocalories, this.listOfLocations) {}
 }
